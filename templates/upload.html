@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Upload{% endblock %}
+
+{% block main %}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Puploader</h1>
+      <hr>
+      <div class="form-group">
+        <form action="http://localhost:5000/upload" class="dropzone dz-clickable" method="POST" enctype="multipart/form-data">
+          <div class="row d-flex justify-content-center mt-100">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header">
+                  <h5>File Upload</h5>
+                </div>
+                <div class="card-block">
+                  <input class="form-control" type="file" id="files" name="files" multiple />
+                  <div class="text-center m-t-20">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

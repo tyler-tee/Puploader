@@ -1,0 +1,5 @@
+/scratch
+/uploads
+*.png
+*.jpg
+*.pyc
