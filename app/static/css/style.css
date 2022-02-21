@@ -73,3 +73,9 @@ body {
     padding: 10px 19px;
     cursor: pointer
 }
+
+.navbar-brand {
+    display: inline-block;
+    margin-left: 100px;
+    height: 2em;
+}

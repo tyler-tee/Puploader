@@ -1,6 +1,6 @@
-from app.app import app
+from app import app
 import os
-from flask import redirect, render_template, request
+from flask import flash, redirect, render_template, request
 from werkzeug.utils import secure_filename
 
 
@@ -22,10 +22,12 @@ def upload_file():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'],
                                         secure_filename(file.filename)))
             
-            return 'File(s) uploaded successfully!'
+        flash('File(s) uploaded successfully!', 'success')
+        
+        return redirect('/')
             
-        else:
-            return 'No files detected for upload - Please try again.'
+    else:
+        return 'Something went wrong - Please try again.'
 
 if __name__ == '__main__':
     app.run()

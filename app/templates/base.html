@@ -14,11 +14,24 @@
 </head>
 
 <body>
-
-  <main>
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Puploader</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="#">Home<span class="sr-only"></span></a>
+          <a class="nav-item nav-link" href="/">Upload</a>
+          <a class="nav-item nav-link disabled" href="/Browse">Browse</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+    <main>
     {% block main %}{% endblock %}
-  </main>
-
+    </main>
   <!-- Import jquery 3.3.1 slim min -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/jquery.slim.min.js"></script>
   <!-- Import Bootstrap bundle -->

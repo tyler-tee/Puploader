@@ -1,5 +1,5 @@
+app/uploads/*
 /scratch
 /uploads
 *.png
-*.jpg
 *.pyc

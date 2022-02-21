@@ -7,10 +7,11 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h1>Puploader</h1>
-      <hr>
       <div class="form-group">
-        <form action="http://localhost:5000/upload" class="dropzone dz-clickable" method="POST" enctype="multipart/form-data">
+        {% for message in get_flashed_messages() %}
+        <h2>{{ message }}</h2>
+        {% endfor %}
+        <form action="http://localhost:5000/upload"method="POST" enctype="multipart/form-data">
           <div class="row d-flex justify-content-center mt-100">
             <div class="col-md-8">
               <div class="card">

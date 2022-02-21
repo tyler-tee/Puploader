@@ -1,11 +1,12 @@
 from flask import Flask
 import os
+from config import config
 
 
 app = Flask(__name__)
 
 # Configure and create the upload folder if necessary
-app.config['UPLOAD_FOLDER'] = "uploads/"
+app.config['UPLOAD_FOLDER'] = config['upload_folder']
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
    os.mkdir(app.config['UPLOAD_FOLDER'])
 
