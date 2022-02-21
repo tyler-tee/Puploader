@@ -1,7 +1,8 @@
 from app import app
 import os
-from flask import flash, redirect, render_template, request
+from flask import flash, redirect, render_template, request, url_for
 from werkzeug.utils import secure_filename
+from config import config
 
 
 @app.route('/')
@@ -10,7 +11,6 @@ def puploader_landing():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    print(request.method)
     if request.method == 'POST': # Check for appropriate method
         # Proceed if there are files to upload - Else notify user.
         files = request.files.getlist('files')
@@ -28,6 +28,13 @@ def upload_file():
             
     else:
         return 'Something went wrong - Please try again.'
+
+
+@app.route('/gallery', methods=['GET'])
+def render_gallery():
+    photos = os.listdir(config['upload_folder'])
+    return render_template('gallery.html', photos=photos)
+
 
 if __name__ == '__main__':
     app.run()

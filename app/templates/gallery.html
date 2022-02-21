@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block main %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-12 text-center">
+            <div class="jumbotron text-center p-4">
+                <h2>Puploader Gallery</h2>
+            </div>
+        </div>
+        {% for photo in photos %}
+        <div class="col-lg-4">
+            <div class="card">
+                <img class="card-img-top" src="{{ url_for('static', filename='uploads/' + photo) }}">
+                <div class="card-body">
+                    <p class="card-text">{{ photo }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

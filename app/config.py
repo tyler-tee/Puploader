@@ -1,3 +1,3 @@
 config = {
-    "upload_folder": "/uploads"
+    "upload_folder": "./static/uploads"
 }

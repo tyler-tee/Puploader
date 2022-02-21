@@ -1,5 +1,6 @@
 app/uploads/*
+app/static/uploads/*
 /scratch
-/uploads
 *.png
 *.pyc
+app/static/uploads/bruno.jpg
