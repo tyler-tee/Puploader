@@ -1,4 +1,4 @@
-from app import app
+from app.app import app
 import os
 from flask import redirect, render_template, request
 from werkzeug.utils import secure_filename
