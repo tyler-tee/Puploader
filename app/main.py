@@ -1,30 +1,41 @@
 from app import app
 import os
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request
 from werkzeug.utils import secure_filename
 from config import config
 
 
 @app.route('/')
 def puploader_landing():
-    return render_template('upload.html')
+    return render_template('index.html')
 
-@app.route('/upload', methods=['GET', 'POST'])
+
+@app.route('/upload')
+def puploader_upload():
+    folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))]
+    folders.sort()
+    return render_template('upload.html', folders=folders)
+
+@app.route('/uploaded', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST': # Check for appropriate method
         # Proceed if there are files to upload - Else notify user.
         files = request.files.getlist('files')
+        if request.form['folder_dropdown'].lower() != 'default':
+            upload_folder = os.path.join(app.config['UPLOAD_FOLDER'], request.form['folder_dropdown'])
         
         for file in files:
             extension = file.filename.split('.')[-1].lower()
             
-            if extension in ('gif', 'jpg', 'jpeg', 'png'):
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'],
-                                        secure_filename(file.filename)))
+            if extension in ('gif', 'jpg', 'jpeg', 'png'): # Check for allowed extensions
+                # If filename is a duplicate, tag w/ _dupe
+                while file.filename in os.listdir(upload_folder):
+                    file.filename = '.'.join(file.filename.split('.')[:-1]) + '_dupe.' + extension
+                file.save(os.path.join(upload_folder, secure_filename(file.filename)))
             
         flash('File(s) uploaded successfully!', 'success')
-        
-        return redirect('/')
+
+        return redirect('/upload')
             
     else:
         return 'Something went wrong - Please try again.'

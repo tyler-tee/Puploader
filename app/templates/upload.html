@@ -11,14 +11,23 @@
         {% for message in get_flashed_messages() %}
         <h2>{{ message }}</h2>
         {% endfor %}
-        <form action="http://localhost:5000/upload"method="POST" enctype="multipart/form-data">
+        <form action="http://localhost:5000/uploaded" method="POST" enctype="multipart/form-data">
           <div class="row d-flex justify-content-center mt-100">
             <div class="col-md-8">
               <div class="card">
                 <div class="card-header">
-                  <h5>File Upload</h5>
+                  <h5>Photo Upload</h5>
                 </div>
                 <div class="card-block">
+                  <div class="form-group">
+                    <label for="folder_dropdown">Destination Folder</label>
+                    <select class="form-control" id="sel1" name="folder_dropdown">
+                      <option value="Default">Default</option>
+                      {% for folder in folders %}
+                      <option value="{{ folder }}">{{ folder }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
                   <input class="form-control" type="file" id="files" name="files" multiple />
                   <div class="text-center m-t-20">
                     <button type="submit" class="btn btn-primary">Upload</button>
