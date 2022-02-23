@@ -95,7 +95,11 @@ def upload_file():
         if request.method == 'POST': # Check for appropriate method
             # Proceed if there are files to upload - Else notify user.
             files = request.files.getlist('files')
-            print(files)
+            
+            if not files[0].filename:
+                flash('No file to upload - Please try again.', 'error')
+                return redirect('/upload')
+            
             if request.form['folder_dropdown'].lower() != 'default':
                 upload_folder = os.path.join(app.config['UPLOAD_FOLDER'], request.form['folder_dropdown'])
             else:
