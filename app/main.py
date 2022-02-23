@@ -1,6 +1,7 @@
-from app import app
+from app import app, users
+import bcrypt
 import os
-from flask import flash, redirect, render_template, request
+from flask import flash, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
 from config import config
 
@@ -9,7 +10,74 @@ from config import config
 def puploader_landing():
     photos = [photo for photo in os.listdir(config['upload_folder']) if '.' in photo]
 
-    return render_template('index.html', photos=photos)
+    if "username" in session:
+        return render_template('index.html', photos=photos)
+    else:
+        return render_template('index_unauth.html', photos=photos)
+
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if "username" in session:
+        return redirect(url_for('logged_in'))
+    if request.method == 'POST':
+        username = request.form.get('inputUsername')
+        password = request.form.get('inputPassword')
+        password_conf = request.form.get('confirmPassword')
+        
+        if users.find_one({'username': username}):
+            pass
+        
+        if password != password_conf:
+            return 'Passwords must match.'
+        
+        else:
+            hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            users.insert_one({'username': username,
+                                'password': hashed_pw})
+            
+            return render_template('authenticated.html', username)
+        
+    return render_template('register.html')
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    message = 'Please login.'
+    
+    if "username" in session:
+        return redirect(url_for('authenticated'))
+
+    if request.method == 'POST':
+        username = request.form.get('inputUsername')
+        password = request.form.get('inputPassword')
+        print(username, password)
+        
+        user_record = users.find_one({'username': username})
+        
+        if user_record: 
+            if bcrypt.checkpw(password.encode('utf-8'), user_record['password']):
+                session['username'] = user_record['username']
+            else:
+                message = 'Incorrect password - Please try again.'
+                return render_template('login.html', message=message)
+        
+        else:
+            message = 'Username not found - Please check and try again.'
+            return render_template('login.html', message=message)
+        
+        return render_template('login.html', message=message)
+    
+    else:
+        return render_template('login.html', message=message)
+
+
+@app.route('/authenticated')
+def authenticated():
+    if "username" in session:
+        username = session['username']
+        
+        return render_template('authenticated.html', username=username)
 
 
 @app.route('/upload')
@@ -17,6 +85,7 @@ def puploader_upload():
     folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))]
     folders.sort()
     return render_template('upload.html', folders=folders)
+
 
 @app.route('/uploaded', methods=['GET', 'POST'])
 def upload_file():
@@ -63,6 +132,18 @@ def render_subfolder_gallery(subfolder):
     photos = [photo for photo in os.listdir(subfolder) if '.' in photo]
 
     return render_template('gallery.html', photos=photos, folders=folders)
+
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+    if 'username' in session:
+        session.pop('username', None)
+        
+        return render_template('logout.html')
+    
+    else:
+        return render_template('index_unauth.html')
+
 
 if __name__ == '__main__':
     app.run()

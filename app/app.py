@@ -1,4 +1,3 @@
-import bcrypt
 from flask import Flask
 import os
 import pymongo
@@ -16,5 +15,5 @@ app.secret_key = "secret key"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 client = pymongo.MongoClient("localhost", 27017)
-database = client['USERS']
-records = database.register
+database = client['AUTH']
+users = database['USERS']
