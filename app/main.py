@@ -74,7 +74,7 @@ def login():
 @app.route('/authenticated')
 def authenticated():
     if "username" in session:
-        username = session['username']
+        username = session['username'].title()
         
         return render_template('authenticated.html', username=username)
 
