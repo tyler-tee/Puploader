@@ -1,7 +1,7 @@
 from app import app, users
 import bcrypt
 import os
-from flask import flash, redirect, render_template, request
+from flask import flash, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
 from config import config
 
@@ -15,6 +15,8 @@ def puploader_landing():
 
 @app.route('/register')
 def register():
+    if "username" in session:
+        return redirect(url_for('logged_in'))
     if request.method == 'POST':
         user = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
@@ -31,9 +33,40 @@ def register():
             users.insert_one({'username': user,
                                 'password': hashed_pw})
             
-            return render_template('logged_in.html')
+            return render_template('authenticated.html')
         
     return render_template('register.html')
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    message = 'Please login.'
+    if "username" in session:
+        return redirect(url_for('authenticated'))
+
+    if request.method == 'POST':
+        username, password = request.form.get('username'), request.form.get('password')
+        
+        user_record = users.find_one({'username': username})
+        if user_record: 
+            if bcrypt.checkpw(password.encode('utf-8'), user_record['password']):
+                session['username'] = user_record['username']
+            else:
+                message = 'Incorrect password - Please try again.'
+                return render_template('login.html', message=message)
+        
+        else:
+            message = 'Username not found - Please check and try again.'
+            return render_template('login.html', message=message)
+        
+        return render_template('login.html', message=message)
+
+
+@app.route('/authenticated')
+def authenticated():
+    if "username" in session:
+        username = session['username']
+        return render_template('authenticated.html', username=username)
 
 
 @app.route('/upload')
