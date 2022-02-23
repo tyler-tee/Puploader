@@ -43,9 +43,21 @@ def upload_file():
 
 @app.route('/gallery', methods=['GET'])
 def render_gallery():
-    photos = os.listdir(config['upload_folder'])
-    return render_template('gallery.html', photos=photos)
+    folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))]
+    folders.sort()
+    photos = [photo for photo in os.listdir(config['upload_folder']) if '.' in photo]
+    
+    return render_template('gallery.html', photos=photos, folders=folders)
 
+
+@app.route('/gallery/<subfolder>', methods=['GET'])
+def render_subfolder_gallery(subfolder):
+    subfolder = os.path.join(app.config['UPLOAD_FOLDER'], subfolder)
+    folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(subfolder, folder))]
+    folders.sort()
+    photos = [photo for photo in os.listdir(subfolder) if '.' in photo]
+
+    return render_template('gallery.html', photos=photos, folders=folders)
 
 if __name__ == '__main__':
     app.run()

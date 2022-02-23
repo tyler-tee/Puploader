@@ -11,6 +11,14 @@
                 <h2>Puploader Gallery</h2>
             </div>
         </div>
+        {% for folder in folders %}
+        <div class="img-wrapper">
+            <a href="{{ url_for('render_subfolder_gallery', subfolder=folder) }}">
+                <image src="{{ url_for('static', filename='assets/folder-icon.png') }}"></image>
+                <p class="img-desc">{{ folder }}</p>
+            </a>            
+        </div>
+        {% endfor %}
         {% for photo in photos %}
         <div class="col-lg-4">
             <div class="card">
