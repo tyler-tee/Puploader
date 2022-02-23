@@ -16,7 +16,8 @@ Simple Flask app built to receive, store, and serve dog photos. Uploading non-do
 
 ## Built with 
 
-- [Flask](https://flask.palletsprojects.com/en/2.0.x/) - "Web development, one drop at a time".
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/) - "Web development, one drop at a time."
+- [MongoDB](https://www.mongodb.com/) - "Build faster, build smarter."
 
 ## Development
 Contribution welcome.
