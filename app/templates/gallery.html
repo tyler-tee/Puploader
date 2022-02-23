@@ -14,7 +14,7 @@
             <div class="container" style="margin:0 auto; width: 100%; text-align: center;">
                 {% for folder in folders %}
                     <div style="display: inline-block">                        
-                        <a href="{{ url_for('render_subfolder_gallery', subfolder=folder) }}">
+                        <a href="{{ url_for('render_subfolder_gallery', subfolder=folder) }}" style="color: grey">
                             <image src="{{ url_for('static', filename='assets/folder-icon.png') }}"></image>
                             <p class="img-desc">{{ folder }}</p>
                         </a>

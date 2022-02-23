@@ -7,7 +7,9 @@ from config import config
 
 @app.route('/')
 def puploader_landing():
-    return render_template('index.html')
+    photos = [photo for photo in os.listdir(config['upload_folder']) if '.' in photo]
+
+    return render_template('index.html', photos=photos)
 
 
 @app.route('/upload')
