@@ -15,7 +15,5 @@ app.secret_key = "secret key"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 client = pymongo.MongoClient("localhost", 27017)
-if not 'AUTH' in client.list_database_names():
-   database = client['AUTH']
-
+database = client['AUTH']
 users = database['USERS']

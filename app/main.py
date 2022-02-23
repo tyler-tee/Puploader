@@ -13,16 +13,16 @@ def puploader_landing():
     return render_template('index.html', photos=photos)
 
 
-@app.route('/register')
+@app.route('/register', methods=['POST', 'GET'])
 def register():
     if "username" in session:
         return redirect(url_for('logged_in'))
     if request.method == 'POST':
-        user = request.form.get('inputUsername')
+        username = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
         password_conf = request.form.get('confirmPassword')
         
-        if users.find_one({'username': user}):
+        if users.find_one({'username': username}):
             pass
         
         if password != password_conf:
@@ -30,10 +30,10 @@ def register():
         
         else:
             hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            users.insert_one({'username': user,
+            users.insert_one({'username': username,
                                 'password': hashed_pw})
             
-            return render_template('authenticated.html')
+            return render_template('authenticated.html', username)
         
     return render_template('register.html')
 
@@ -41,13 +41,15 @@ def register():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     message = 'Please login.'
+    
     if "username" in session:
         return redirect(url_for('authenticated'))
 
     if request.method == 'POST':
-        username, password = request.form.get('username'), request.form.get('password')
+        username, password = request.form.get('inputUsername'), request.form.get('inputPassword')
         
         user_record = users.find_one({'username': username})
+        
         if user_record: 
             if bcrypt.checkpw(password.encode('utf-8'), user_record['password']):
                 session['username'] = user_record['username']
@@ -60,12 +62,16 @@ def login():
             return render_template('login.html', message=message)
         
         return render_template('login.html', message=message)
+    
+    else:
+        return render_template('login.html', message=message)
 
 
 @app.route('/authenticated')
 def authenticated():
     if "username" in session:
         username = session['username']
+        
         return render_template('authenticated.html', username=username)
 
 
