@@ -10,7 +10,10 @@ from config import config
 def puploader_landing():
     photos = [photo for photo in os.listdir(config['upload_folder']) if '.' in photo]
 
-    return render_template('index.html', photos=photos)
+    if "username" in session:
+        return render_template('index.html', photos=photos)
+    else:
+        return render_template('index_unauth.html', photos=photos)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -46,7 +49,9 @@ def login():
         return redirect(url_for('authenticated'))
 
     if request.method == 'POST':
-        username, password = request.form.get('inputUsername'), request.form.get('inputPassword')
+        username = request.form.get('inputUsername')
+        password = request.form.get('inputPassword')
+        print(username, password)
         
         user_record = users.find_one({'username': username})
         
@@ -127,6 +132,18 @@ def render_subfolder_gallery(subfolder):
     photos = [photo for photo in os.listdir(subfolder) if '.' in photo]
 
     return render_template('gallery.html', photos=photos, folders=folders)
+
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+    if 'username' in session:
+        session.pop('username', None)
+        
+        return render_template('logout.html')
+    
+    else:
+        return render_template('index_unauth.html')
+
 
 if __name__ == '__main__':
     app.run()
