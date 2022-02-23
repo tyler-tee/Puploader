@@ -58,6 +58,7 @@ def login():
         if user_record: 
             if bcrypt.checkpw(password.encode('utf-8'), user_record['password']):
                 session['username'] = user_record['username']
+                return redirect(url_for('authenticated'))
             else:
                 message = 'Incorrect password - Please try again.'
                 return render_template('login.html', message=message)
@@ -65,9 +66,7 @@ def login():
         else:
             message = 'Username not found - Please check and try again.'
             return render_template('login.html', message=message)
-        
-        return render_template('login.html', message=message)
-    
+            
     else:
         return render_template('login.html', message=message)
 
