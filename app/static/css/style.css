@@ -2,22 +2,6 @@ body {
     background-color: #f2f7fb
 }
 
-a {
-    text-decoration: grey;
-  }
-  a:link {
-    color: #000;
-    border-bottom: 1px solid #ff0000;
-  }
-  a:visited {
-    color: #e600e6;
-    border-bottom: 1px solid #b3b3b3;
-  }
-  a:hover {
-    color: #2d8653;
-    border-bottom: 1px solid #000099;
-  }
-
 .mt-100 {
     margin-top: 100px
 }
@@ -52,6 +36,14 @@ a {
 .card .card-block {
     padding: 1.25rem
 }
+
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    }
 
 .dropzone.dz-clickable {
     cursor: pointer

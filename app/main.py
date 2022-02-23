@@ -23,6 +23,8 @@ def upload_file():
         files = request.files.getlist('files')
         if request.form['folder_dropdown'].lower() != 'default':
             upload_folder = os.path.join(app.config['UPLOAD_FOLDER'], request.form['folder_dropdown'])
+        else:
+            upload_folder = app.config['UPLOAD_FOLDER']
         
         for file in files:
             extension = file.filename.split('.')[-1].lower()
