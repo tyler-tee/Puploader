@@ -3,7 +3,16 @@
 {% block title %}Authenticated{% endblock %}
 
 {% block main %}
+<div class="center">
+    <h1>Good to see you, {{ username }}!</h1>    
+</div>
+{% endblock %}
 
-<p>Good to see you, {{ username }}!</p>
-
+{% block script %}
+<script>
+    // Automatically take user home
+    window.setTimeout(function(){
+        window.location.href = "/"
+    }, 5000);
+</script>
 {% endblock %}

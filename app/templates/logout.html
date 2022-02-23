@@ -3,5 +3,16 @@
 {% block title %}Logging Out{% endblock %}
 
 {% block main %}
-<h1>Logged out successfully!</h1>
+<div class="center">
+    <h1>Logged out successfully!</h1>   
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    //Automatically take user home
+    window.setTimeout(function(){
+        window.location.href = "/"
+    }, 5000);
+</script>
 {% endblock %}
