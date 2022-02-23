@@ -6,7 +6,8 @@ Simple Flask app built to receive, store, and serve dog photos. Uploading non-do
 </td>
 </tr>
 </table>
-![image](https://user-images.githubusercontent.com/64701075/155412232-fab10c9f-27cd-49ab-a500-e20c0b19bf46.png)
+
+![Puploader](https://user-images.githubusercontent.com/64701075/155412232-fab10c9f-27cd-49ab-a500-e20c0b19bf46.png)
 
 ## Current Features
 - Multi-file upload
