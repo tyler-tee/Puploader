@@ -1,4 +1,5 @@
-from app import app
+from app import app, users
+import bcrypt
 import os
 from flask import flash, redirect, render_template, request
 from werkzeug.utils import secure_filename
@@ -12,11 +13,35 @@ def puploader_landing():
     return render_template('index.html', photos=photos)
 
 
+@app.route('/register')
+def register():
+    if request.method == 'POST':
+        user = request.form.get('inputUsername')
+        password = request.form.get('inputPassword')
+        password_conf = request.form.get('confirmPassword')
+        
+        if users.find_one({'username': user}):
+            pass
+        
+        if password != password_conf:
+            return 'Passwords must match.'
+        
+        else:
+            hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            users.insert_one({'username': user,
+                                'password': hashed_pw})
+            
+            return render_template('logged_in.html')
+        
+    return render_template('register.html')
+
+
 @app.route('/upload')
 def puploader_upload():
     folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))]
     folders.sort()
     return render_template('upload.html', folders=folders)
+
 
 @app.route('/uploaded', methods=['GET', 'POST'])
 def upload_file():
