@@ -137,11 +137,14 @@ def render_gallery():
 
 @app.route('/gallery/<subfolder>', methods=['GET'])
 def render_subfolder_gallery(subfolder):
+    if '.' in subfolder:
+        return redirect(url_for('/'))
+    
     if "username" in session:
-        subfolder = os.path.join(app.config['UPLOAD_FOLDER'], subfolder)
-        folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(subfolder, folder))]
+        subfolder_dir = os.path.join(app.config['UPLOAD_FOLDER'], subfolder)
+        folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(subfolder_dir, folder))]
         folders.sort()
-        photos = [photo for photo in os.listdir(subfolder) if '.' in photo]
+        photos = [subfolder + '/' + photo for photo in os.listdir(subfolder_dir) if '.' in photo]
 
         return render_template('gallery.html', photos=photos, folders=folders)
     else:
