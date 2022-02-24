@@ -51,7 +51,6 @@ def login():
     if request.method == 'POST':
         username = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
-        print(username, password)
         
         user_record = users.find_one({'username': username})
         
