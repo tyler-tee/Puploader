@@ -1,6 +1,31 @@
-.mt-100
+.bg-image-vertical
 {
-  margin-top: 100px;
+  position: relative;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: auto 100%;
+}
+
+.btn-primary,
+.sweet-alert button.confirm,
+.wizard>.actions a
+{
+  background-color: #4099ff;
+  border-color: #4099ff;
+  color: #fff;
+  cursor: pointer;
+  -webkit-transition: all ease-in .3s;
+  transition: all ease-in .3s;
+}
+
+.btn
+{
+  border-radius: 2px;
+  text-transform: capitalize;
+  font-size: 18px;
+  padding: 10px 19px;
+  cursor: pointer;
 }
 
 .card
@@ -73,25 +98,9 @@
   margin-top: 20px;
 }
 
-.btn-primary,
-.sweet-alert button.confirm,
-.wizard>.actions a
+.mt-100
 {
-  background-color: #4099ff;
-  border-color: #4099ff;
-  color: #fff;
-  cursor: pointer;
-  -webkit-transition: all ease-in .3s;
-  transition: all ease-in .3s;
-}
-
-.btn
-{
-  border-radius: 2px;
-  text-transform: capitalize;
-  font-size: 18px;
-  padding: 10px 19px;
-  cursor: pointer;
+  margin-top: 100px;
 }
 
 .navbar-brand
@@ -109,15 +118,6 @@
   padding: 5px;
   font-size: 20px;
   text-align: center;
-}
-
-.bg-image-vertical
-{
-  position: relative;
-  overflow: hidden;
-  background-repeat: no-repeat;
-  background-position: right center;
-  background-size: auto 100%;
 }
 
 @media (min-width: 1025px)
