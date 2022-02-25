@@ -20,12 +20,13 @@ def puploader_landing():
 def register():
     if "username" in session:
         return redirect(url_for('logged_in'))
+    
     if request.method == 'POST':
         username = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
         password_conf = request.form.get('confirmPassword')
         
-        if users.find_one({'username': username}):
+        if users.find_one({'username': username.lower()}):
             pass
         
         if password != password_conf:
@@ -36,7 +37,7 @@ def register():
             users.insert_one({'username': username,
                                 'password': hashed_pw})
             
-            return render_template('authenticated.html', username)
+            return render_template('authenticated.html', username=username)
         
     return render_template('register.html')
 
@@ -52,7 +53,7 @@ def login():
         username = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
         
-        user_record = users.find_one({'username': username})
+        user_record = users.find_one({'username': username.lower()})
         
         if user_record: 
             if bcrypt.checkpw(password.encode('utf-8'), user_record['password']):
@@ -73,9 +74,9 @@ def login():
 @app.route('/authenticated')
 def authenticated():
     if "username" in session:
-        username = session['username'].title()
+        username = session['username']
         
-        return render_template('authenticated.html', username=username)
+        return render_template('authenticated.html', username=username.title())
 
 
 @app.route('/upload')
@@ -84,6 +85,7 @@ def puploader_upload():
         folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))]
         folders.sort()
         return render_template('upload.html', folders=folders)
+    
     else:
         return redirect(url_for('login'))
 
@@ -111,6 +113,7 @@ def upload_file():
                     # If filename is a duplicate, tag w/ _dupe
                     while file.filename in os.listdir(upload_folder):
                         file.filename = '.'.join(file.filename.split('.')[:-1]) + '_dupe.' + extension
+                        
                     file.save(os.path.join(upload_folder, secure_filename(file.filename)))
                 
             flash('File(s) uploaded successfully!', 'success')
@@ -163,4 +166,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
