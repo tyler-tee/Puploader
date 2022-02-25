@@ -10,9 +10,9 @@
       <div class="form-group">
         <form action="/uploaded" method="POST" enctype="multipart/form-data">
           <div class="row d-flex justify-content-center mt-100">
-          {% for message in get_flashed_messages() %}
-          <h2>{{ message }}</h2>
-          {% endfor %}            
+            {% for message in get_flashed_messages() %}
+            <h2>{{ message }}</h2>
+            {% endfor %}
             <div class="col-md-8">
               <div class="card">
                 <div class="card-header">

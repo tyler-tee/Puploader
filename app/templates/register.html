@@ -5,41 +5,41 @@
 {% block main %}
 
 <section class="vh-100">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="w-50 mx-auto text-black">
-                <div class="card" style="font-size: 18px; position: relative; top: 20%">
-                    <div class="card-block">
-                        <form action="" method="post" style="align-items: center">
-                        {% if message %}
-                            <div class="alert alert-secondary mx-auto" role="alert">
-                                <p>{{ message }}</p>
-                            </div>
-                        {% endif %}
-                        <div class="form-group form-group-lg">
-                            <label for="inputUsername">Username</label>
-                            <input name="inputUsername" class="form-control form-control-lg" id="inputUsername" placeholder="Enter Username">
-                        </div>
-                        <div class="form-group form-group-lg">
-                            <label for="inputPassword">Password</label>
-                            <input name="inputPassword" type="password" class="form-control form-control-lg" id="inputPassword" placeholder="Enter Password">
-                        </div>
-                        <div class="form-group form-group-lg">
-                            <label for="confirmPassword">Confirm Password</label>
-                            <input type="password" name="confirmPassword" class="form-control form-control-lg" id="confirmPassword" placeholder="Confirm Password">
-                        </div>
-                        <div class="pt-3 d-flex">
-                            <button type="submit" class="btn btn-info btn-block" style="width: 100%; font-size: 18px; color: white">Login</button>
-                        </div>
-                    </form>
-                    </div>
-                </div>
-            </div>
-            <div class="w-50 mx-auto px-0 d-flex d-sm-block">
-                <img src="{{ url_for('static', filename='assets/pups2.jpg') }}" alt="Login image" class="w-100 vh-100" style="object-fit: cover; object-position: right;">
-            </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="w-50 mx-auto text-black">
+        <div class="card" style="font-size: 18px; position: relative; top: 20%">
+          <div class="card-block">
+            <form action="" method="post" style="align-items: center">
+              {% if message %}
+              <div class="alert alert-secondary mx-auto" role="alert">
+                <p>{{ message }}</p>
+              </div>
+              {% endif %}
+              <div class="form-group form-group-lg">
+                <label for="inputUsername">Username</label>
+                <input name="inputUsername" class="form-control form-control-lg" id="inputUsername" placeholder="Enter Username">
+              </div>
+              <div class="form-group form-group-lg">
+                <label for="inputPassword">Password</label>
+                <input name="inputPassword" type="password" class="form-control form-control-lg" id="inputPassword" placeholder="Enter Password">
+              </div>
+              <div class="form-group form-group-lg">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" name="confirmPassword" class="form-control form-control-lg" id="confirmPassword" placeholder="Confirm Password">
+              </div>
+              <div class="pt-3 d-flex">
+                <button type="submit" class="btn btn-info btn-block" style="width: 100%; font-size: 18px; color: white">Login</button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
+      <div class="w-50 mx-auto px-0 d-flex d-sm-block">
+        <img src="{{ url_for('static', filename='assets/pups2.jpg') }}" alt="Login image" class="w-100 vh-100" style="object-fit: cover; object-position: right;">
+      </div>
     </div>
+  </div>
 </section>
 
 {% endblock %}
