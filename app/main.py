@@ -19,32 +19,31 @@ def puploader_landing():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if "username" in session:
-        return redirect(url_for('logged_in'))
+        return redirect(url_for('authenticated'))
     
     if request.method == 'POST':
-        username = request.form.get('inputUsername')
+        username = request.form.get('inputUsername').lower()
         password = request.form.get('inputPassword')
         password_conf = request.form.get('confirmPassword')
         
-        if users.find_one({'username': username.lower()}):
-            pass
+        if users.find_one({'username': username}):
+            return render_template('register.html', message='Username already taken.')
         
         if password != password_conf:
             return 'Passwords must match.'
         
         else:
             hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            users.insert_one({'username': username,
-                                'password': hashed_pw})
+            users.insert_one({'username': username, 'password': hashed_pw})
             
-            return render_template('authenticated.html', username=username)
+            return render_template('authenticated.html', username=username.title())
         
     return render_template('register.html')
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    message = 'Please login.'
+    message = None
     
     if "username" in session:
         return redirect(url_for('authenticated'))
