@@ -4,3 +4,4 @@ app/static/uploads/*
 *.png
 *.pyc
 app/static/uploads/bruno.jpg
+app/petfinder_api/petfinder_config.json

@@ -182,6 +182,16 @@ def render_subfolder_gallery(subfolder):
         return render_template('gallery.html', photos=photos, folders=folders)
     else:
         return redirect(url_for('login'))
+    
+    
+@app.route('/resources', methods=['GET'])
+def render_resources():
+    return render_template('resources.html')
+
+
+@app.route('/about', methods=['GET'])
+def render_about():
+    return render_template('about.html')
 
 
 @app.route('/logout', methods=['POST', 'GET'])
