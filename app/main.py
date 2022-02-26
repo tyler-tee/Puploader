@@ -87,6 +87,12 @@ def puploader_upload():
     
     else:
         return redirect(url_for('login'))
+    
+    
+def dir_cleanup():
+    files = {i: os.path.getmtime(i) for i in os.listdir(app.config['UPLOAD_FOLDER'])}
+    
+    os.remove(files[0][0])
 
 
 @app.route('/uploaded', methods=['GET', 'POST'])
@@ -112,6 +118,9 @@ def upload_file():
                     # If filename is a duplicate, tag w/ _dupe
                     while file.filename in os.listdir(upload_folder):
                         file.filename = '.'.join(file.filename.split('.')[:-1]) + '_dupe.' + extension
+                    
+                    if len(os.listdir('.')) >= app.config['upload_folder_max']:
+                        dir_cleanup()
                         
                     file.save(os.path.join(upload_folder, secure_filename(file.filename)))
                 
@@ -123,6 +132,28 @@ def upload_file():
             return 'Something went wrong - Please try again.'
     else:
         return redirect(url_for('login'))
+    
+    
+@app.route('/new_folder', methods=['POST', 'GET'])
+def create_new_folder():
+    if app.config['private']:
+        new_folder = request.form['folderName'].replace('.', '').replace('/', '').replace('\\', '')
+        
+        try:
+            os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], new_folder))
+            
+            flash('New folder ' + new_folder + ' created!')
+            
+            return redirect('upload')
+        
+        except Exception as e:
+            print(e)
+            
+            flash('Folder already exists - No folder created.')
+            return redirect('upload')
+    else:
+        flash("Sorry, new folder creation is disabled while running publicly!")
+        return redirect('upload')
 
 
 @app.route('/gallery', methods=['GET'])
