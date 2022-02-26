@@ -2,3 +2,4 @@ bcrypt
 Flask
 gunicorn
 Jinja2
+pymongo
