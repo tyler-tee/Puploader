@@ -1,18 +1,6 @@
 import json
 import os
 import requests
-
-try:
-    key = os.environ.get('PETFINDER_KEY')
-    sec = os.environ.get('PETFINDER_SEC')
-except Exception as e:
-    print(e)
-    try:
-        with open('petfinder_config.json') as f:
-            config = json.load(f)
-            key, sec = config['petfinder_key'], config['petfinder_sec']
-    except Exception as e:
-        print(e)
         
 
 class PetFinder:

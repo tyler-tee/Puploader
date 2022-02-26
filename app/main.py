@@ -4,6 +4,7 @@ import os
 from flask import flash, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
 from config import config
+from petfinder_api.petfinder_api import PetFinder
 
 
 @app.route('/')
