@@ -10,27 +10,36 @@
       <div class="form-group">
         <form action="/uploaded" method="POST" enctype="multipart/form-data">
           <div class="row d-flex justify-content-center mt-100">
-            {% for message in get_flashed_messages() %}
-            <h2>{{ message }}</h2>
-            {% endfor %}
             <div class="col-md-8">
               <div class="card">
+                {% for message in get_flashed_messages() %}
+                <h2 class="text-center">{{ message }}</h2>
+                {% endfor %}
                 <div class="card-header">
                   <h5>Photo Upload</h5>
                 </div>
                 <div class="card-block">
                   <div class="form-group">
                     <label for="folder_dropdown">Destination Folder</label>
-                    <select class="form-control" id="sel1" name="folder_dropdown">
-                      <option value="Default">Default</option>
-                      {% for folder in folders %}
-                      <option value="{{ folder }}">{{ folder }}</option>
-                      {% endfor %}
-                    </select>
+                    <div class="col">
+                      <div style="width: 100%; display: inline-block;">
+                        <div style="width: 10%; float: left">
+                          <button id="btnNewForm" type="button" class="btn btn-info py-1" data-toggle="modal" data-target="#formModal" title="Create New Folder"><i class="material-icons text-center">create_new_folder</i></button>
+                        </div>
+                        <div style="width: 90%; float: right">
+                          <select class="form-control py-2" style="vertical-align: middle" id="sel1" name="folder_dropdown" >
+                            <option value="Default">Default</option>
+                            {% for folder in folders %}
+                            <option value="{{ folder }}">{{ folder }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <input class="form-control" style="margin-top: 5px" type="file" id="files" name="files" multiple />
                   <div class="text-center m-t-20">
-                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button type="submit" class="btn btn-info">Upload</button>
                   </div>
                 </div>
               </div>
@@ -38,6 +47,28 @@
           </div>
         </form>
       </div>
+    </div>
+  </div>
+</div>
+<!-- Popup form to get new folder information -->
+<div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <form id="formNewFolder" action="/new_folder" enctype="multipart/form-data" method="POST">
+        <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-sm-6 d-flex">
+                <input type="text" style="width: 100%" class="form-control" id="folderName" name="folderName" placeholder="Folder Name" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
