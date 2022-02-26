@@ -4,7 +4,7 @@ import os
 from flask import flash, Flask, redirect, render_template, request, session, url_for
 import pymongo
 from werkzeug.utils import secure_filename
-from config import config
+# from config import config
 from petfinder_api.petfinder_api import PetFinder
 
 
@@ -21,8 +21,12 @@ else:
 
 app = Flask(__name__)
 
+# Changing this to False will disable certain functions of the app (IE, create_new_folder)
+app.config['private'] = False
+app.config['upload_folder_max'] = 50
+
 # Configure and create the upload folder if necessary
-app.config['UPLOAD_FOLDER'] = config['upload_folder']
+app.config['UPLOAD_FOLDER'] = "./static/uploads"
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
    os.mkdir(app.config['UPLOAD_FOLDER'])
 
@@ -38,7 +42,7 @@ users = database['USERS']
 
 @app.route('/')
 def puploader_landing():
-    photos = [photo for photo in os.listdir(config['upload_folder']) if '.' in photo]
+    photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
 
     if "username" in session:
         return render_template('index.html', photos=photos)
@@ -191,7 +195,7 @@ def render_gallery():
     if "username" in session:
         folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))]
         folders.sort()
-        photos = [photo for photo in os.listdir(config['upload_folder']) if '.' in photo]
+        photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
         
         return render_template('gallery.html', photos=photos, folders=folders)
     else:
