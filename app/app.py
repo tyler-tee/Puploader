@@ -24,8 +24,8 @@ app = Flask(__name__)
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/')
 
 # Changing this to False will disable certain functions of the app (IE, create_new_folder)
-# app.config['private'] = False
-# app.config['upload_folder_max'] = 50
+app.config['private'] = False
+app.config['upload_folder_max'] = 50
 
 # Configure and create the upload folder if necessary
 app.config['UPLOAD_FOLDER'] = "./static/uploads"
