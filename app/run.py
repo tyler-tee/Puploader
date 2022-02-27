@@ -1,5 +1,6 @@
 import bcrypt
 from flask import flash, redirect, render_template, request, session, url_for
+import json
 import os
 from werkzeug.utils import secure_filename
 from app import create_app
@@ -189,7 +190,15 @@ def render_subfolder_gallery(subfolder):
     
 @app.route('/resources', methods=['GET'])
 def render_resources():
-    return render_template('resources.html')
+    petfinder_api = PetFinder(app.config['PETFINDER_KEY'], app.config['PETFINDER_SEC'])
+    petfinder_api.auth()
+    organizations = petfinder_api.get_organizations(location=app.config['LOCATION'])
+    
+    for org in organizations:
+        org['address'] = ', '.join(i for i in org['address'].values() if i)
+        org['hours'] = ', '.join(i for i in org['hours'].values() if i)
+
+    return render_template('resources.html', organizations=organizations)
 
 
 @app.route('/about', methods=['GET'])

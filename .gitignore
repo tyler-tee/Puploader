@@ -1,9 +1,11 @@
 app/uploads/*
 app/static/uploads/*
 /scratch
+*.ipynb
 *.png
 *.pyc
 app/static/uploads/bruno.jpg
 app/petfinder_api/petfinder_config.json
 app/config.json
 app/config/development.cfg
+app/orgs.json

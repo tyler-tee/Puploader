@@ -120,6 +120,192 @@
   text-align: center;
 }
 
+.org-container {
+  box-shadow: 0 15px 30px 1px grey;
+	background: rgba(255, 255, 255, 0.90);
+	overflow: hidden;
+	margin: 2em;
+	height: 325px;
+	width: 650px;
+}
+
+.org-details {
+	position: relative;
+	text-align: left;
+	overflow: hidden;
+	padding: 30px;
+	height: 100%;
+	float: left;
+	width: 40%;
+}
+
+.org-container .org-details h1{
+	font-family: 'Bebas Neue', cursive;
+	display: inline-block;
+	position: relative;
+	font-size: 22px;
+	color: #344055;
+	margin: 0;
+}
+
+.org-container .org-details h1:before{
+	position: absolute;
+	content: '';
+	right: 0%; 
+	top: 0%;
+	transform: translate(25px, -15px);
+	font-family: 'Bree Serif', serif;
+	display: inline-block;
+	background: #ffe6e6;
+	border-radius: 5px;
+	font-size: 14px;
+	padding: 5px;
+	color: white;
+	margin: 0;
+	animation: chan-sh 6s ease infinite;
+}
+
+.org-container .org-details > p {
+  font-family: 'EB Garamond', serif;
+    text-align: center;
+    font-size: 18px;
+    color: #7d7d7d;
+  }
+
+.org-control {
+  position: absolute;
+	bottom: 5%;
+	left: 22.8%;
+}
+
+.org-image {
+    transition: all 0.3s ease-out;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    float: right;
+    width: 45%;
+    display: inline-block;
+  }
+
+.org-container img {width: 100%;height: 100%;}
+
+.org-info {
+    background: rgba(27, 26, 26, 0.9);
+    font-family: 'Bree Serif', serif;
+    transition: all 0.3s ease-out;
+    transform: translateX(-100%);
+    position: absolute;
+    line-height: 1.8;
+    text-align: left;
+    font-size: 100%;
+    cursor: no-drop;
+    color: #FFF;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
+
+.org-info h2 {text-align: center}
+.org-image:hover .org-info{transform: translateX(0);}
+
+.org-info ul li{transition: 0.3s ease;}
+.org-info ul li:hover{transform: translateX(50px) scale(1.3);}
+
+.org-image:hover img {transition: all 0.3s ease-out;}
+.org-image:hover img {transform: scale(1.2, 1.2);}
+
+.fa {  
+  padding: 7px;
+  font-size: 5px;
+  text-decoration: none;
+  margin: 1px 1px;
+  color: white;
+}
+
+.fa:hover {
+  opacity: 0.7;
+}
+
+.fa-facebook {
+  background: #3B5998;
+}
+
+.fa-twitter {
+  background: #55ACEE;
+}
+
+.fa-google {
+  background: #dd4b39;
+}
+
+.fa-linkedin {
+  background: #007bb5;
+}
+
+.fa-youtube {
+  background: #bb0000;
+}
+
+.fa-instagram {
+  background: #8a3ab9;
+}
+
+.fa-whatsapp {
+  background: #4FCE5D;
+}
+
+.fa-pinterest {
+  background: #cb2027;
+}
+
+.fa-snapchat-ghost {
+  background: #fffc00;  
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.fa-skype {
+  background: #00aff0;
+}
+
+.fa-github {
+  background: #000000;
+}
+
+.fa-dribbble {
+  background: #ea4c89;
+}
+
+.fa-vimeo {
+  background: #45bbff;
+}
+
+.fa-foursquare {
+  background: #45bbff;
+}
+
+.fa-stumbleupon {
+  background: #eb4924;
+}
+
+.fa-flickr {
+  background: #f40083;
+}
+
+.fa-yahoo {
+  background: #430297;
+}
+
+.fa-reddit {
+  background: #ff5700;
+}
+
+.fa-rss {
+  background: #ff6600;
+}
+
 @media (min-width: 1025px)
 {
   .h-custom-2

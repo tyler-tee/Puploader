@@ -3,7 +3,80 @@
 {% block title %}Resources{% endblock %}
 
 {% block main %}
-<div>
-    Coming soon!
-</div>
+<center>
+    <div class="card-header" data-toggle="collapse" data-target="#localShelters" style="text-align: left; padding-left: 20px">
+        <button id="btnExpandGenOrgs" type="button" class="btn btn-info py-0 px-0" style="margin: 0 auto" data-toggle="collapse" data-target="#localShelters" title="Expand Orgs">
+            <i class="material-icons text-center">expand_more</i>
+        </button>
+        Adotable Dogs
+    </div>
+    <div id="localShelters" class="card-body collapse">
+    </div>
+    <div class="card-header" data-toggle="collapse" data-target="#genOrgs" style="text-align: left; padding-left: 20px">
+        <button id="btnExpandGenOrgs" type="button" class="btn btn-info py-0 px-0" style="margin: 0 auto" data-toggle="collapse" data-target="#genOrgs" title="Expand Orgs">
+            <i class="material-icons text-center">expand_more</i>
+        </button>
+        General Organizations
+    </div>
+    <div id="genOrgs" class="card-body collapse">
+        {% for organization in organizations[:5] %}
+        <div class="org-container" style="float: left; width: 45%">
+            <div class="org-details">
+            <h1>{{ organization.name }}</h1>	
+            <p class="mission-statement pt-1">{{ organization.mission_statement }}</p>
+                <div class="org-control">
+                    <center>
+                        <a href="{{ organization.social_media.facebook }}" class="fa fa-facebook"></a>
+                        <a href="{{ organization.social_media.twitter }}" class="fa fa-twitter"></a>
+                        <a href="{{ organization.social_media.youtube }}" class="fa fa-youtube"></a>
+                        <a href="{{ organization.social_media.instagram }}" class="fa fa-instagram"></a>
+                        <a href="{{ organization.social_media.pinterest }}" class="fa fa-pinterest"></a>
+                    </center>
+                </div>	
+            </div>
+            <div class="org-image">
+                <img src="{{ organization['photos'][0]['medium'] }}" alt="">
+            <div class="org-info">
+                    <h2>Details</h2>
+                    <ul>
+                        <li><strong>Email : </strong>{{ organization.email }}</li>
+                        <li><strong>Phone : </strong>{{ organization.phone }}</li>                    
+                        <li><strong>Address : </strong>{{ organization.address }}</li>
+                        <li><strong>Hours : </strong>{{ organization.hours }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% for organization in organizations[5:] %}
+        <div class="org-container" style="float: right; width: 45%">
+            <div class="org-details">
+            <h1>{{ organization.name }}</h1>
+            <p class="mission-statement pt-1">{{ organization.mission_statement }}</p>
+                <div class="org-control">
+                    <center>
+                        <a href="{{ organization.social_media.facebook }}" class="fa fa-facebook"></a>
+                        <a href="{{ organization.social_media.twitter }}" class="fa fa-twitter"></a>
+                        <a href="{{ organization.social_media.youtube }}" class="fa fa-youtube"></a>
+                        <a href="{{ organization.social_media.instagram }}" class="fa fa-instagram"></a>
+                        <a href="{{ organization.social_media.pinterest }}" class="fa fa-pinterest"></a>
+                    </center>
+                </div>	
+            </div>
+            <div class="org-image">
+                <img src="{{ organization['photos'][0]['medium'] }}" alt="">
+            <div class="org-info">
+                    <h2>Details</h2>
+                    <ul>
+                        <li><strong>Email : </strong>{{ organization.email }}</li>
+                        <li><strong>Phone : </strong>{{ organization.phone }}</li>                    
+                        <li><strong>Address : </strong>{{ organization.address }}</li>
+                        <li><strong>Hours : </strong>{{ organization.hours }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</center>
 {% endblock %}

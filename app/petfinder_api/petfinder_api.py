@@ -18,8 +18,14 @@ class PetFinder:
                 'client_id': self.api_key,
                 'client_secret': self.api_sec}
         
-        token = self.client.post(f'{self.base_url}/oauth2/token',
+        response = self.client.post(f'{self.base_url}/oauth2/token',
                                  data=data)
+        
+        if response.status_code == 200:
+            token = response.json()['access_token']
+        else:
+            print('Error authenticating.')
+            return None
         
         self.client.headers = {'Authorization': f'Bearer {token}'}
         
@@ -27,6 +33,13 @@ class PetFinder:
     
     
     def get_organizations(self, **kwargs):
-        organizations = self.client.get(f'{self.base_url}/organizations', params=kwargs)
+        params = kwargs
+        params['limit'] = 10
         
-        return organizations
+        response = self.client.get(f'{self.base_url}/organizations', params=params)
+        
+        if response.status_code == 200:
+            return response.json()['organizations']
+        else:
+            print('Error: ', response.status_code, response.headers)
+            return None
