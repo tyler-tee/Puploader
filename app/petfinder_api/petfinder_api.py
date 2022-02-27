@@ -41,5 +41,16 @@ class PetFinder:
         if response.status_code == 200:
             return response.json()['organizations']
         else:
-            print('Error: ', response.status_code, response.headers)
+            print('Error: ', response.status_code, response.headers, response.text)
+            return None
+        
+        
+    def get_animals(self, **kwargs):
+        
+        response = self.client.get(f'{self.base_url}/animals', params=kwargs)
+        
+        if response.status_code == 200:
+            return response.json()['animals']
+        else:
+            print('Error: ', response.status_code, response.headers, response.text)
             return None

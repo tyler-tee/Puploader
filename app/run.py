@@ -197,8 +197,17 @@ def render_resources():
     for org in organizations:
         org['address'] = ', '.join(i for i in org['address'].values() if i)
         org['hours'] = ', '.join(i for i in org['hours'].values() if i)
+    
+    pups = petfinder_api.get_animals(type='dog')
+    
+    for pup in pups:
+        pup['contact']['address'] = ', '.join(i for i in pup['contact']['address'].values() if i)
+        try:
+            pup['photo'] = pup['photos'][0]['medium']
+        except Exception as e:
+            pup['photo'] = './static/assets/no_photo_avail.jpg'
 
-    return render_template('resources.html', organizations=organizations)
+    return render_template('resources.html', organizations=organizations, pups=pups)
 
 
 @app.route('/about', methods=['GET'])
