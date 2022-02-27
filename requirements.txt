@@ -5,3 +5,4 @@ gunicorn
 Jinja2
 pymongo
 requests
+whitenoise

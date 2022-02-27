@@ -4,6 +4,7 @@ import os
 from flask import flash, Flask, redirect, render_template, request, session, url_for
 import pymongo
 from werkzeug.utils import secure_filename
+from whitenoise import WhiteNoise
 # from config import config
 from petfinder_api.petfinder_api import PetFinder
 
@@ -20,10 +21,11 @@ else:
 
 
 app = Flask(__name__)
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/')
 
 # Changing this to False will disable certain functions of the app (IE, create_new_folder)
-app.config['private'] = False
-app.config['upload_folder_max'] = 50
+# app.config['private'] = False
+# app.config['upload_folder_max'] = 50
 
 # Configure and create the upload folder if necessary
 app.config['UPLOAD_FOLDER'] = "./static/uploads"
@@ -37,7 +39,6 @@ mongodb_uri = os.environ.get('MONGODB_URI') if os.environ.get('MONGODB_URI') els
 client = pymongo.MongoClient(mongodb_uri, 27017)
 database = client['AUTH']
 users = database['USERS']
-
 
 
 @app.route('/')
