@@ -5,3 +5,5 @@ app/static/uploads/*
 *.pyc
 app/static/uploads/bruno.jpg
 app/petfinder_api/petfinder_config.json
+app/config.json
+app/config/development.cfg
