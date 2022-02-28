@@ -15,9 +15,9 @@ def puploader_landing():
     photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
 
     if "username" in session:
-        return render_template('index.html', photos=photos)
+        return render_template('index.html', photos=photos, auth=True)
     else:
-        return render_template('index_unauth.html', photos=photos)
+        return render_template('index_unauth.html', photos=photos, auth=False)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -31,7 +31,7 @@ def register():
         password_conf = request.form.get('confirmPassword')
         
         if users.find_one({'username': username}):
-            return render_template('register.html', message='Username already taken.')
+            return render_template('register.html', message='Username already taken.', auth=('username' in session))
         
         if password != password_conf:
             return 'Passwords must match.'
@@ -40,9 +40,9 @@ def register():
             hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             users.insert_one({'username': username, 'password': hashed_pw})
             
-            return render_template('authenticated.html', username=username.title())
+            return render_template('authenticated.html', username=username.title(), auth=('username' in session))
         
-    return render_template('register.html')
+    return render_template('register.html', auth=('username' in session))
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -64,14 +64,14 @@ def login():
                 return redirect(url_for('authenticated'))
             else:
                 message = 'Incorrect password - Please try again.'
-                return render_template('login.html', message=message)
+                return render_template('login.html', message=message, auth=('username' in session))
         
         else:
             message = 'Username not found - Please check and try again.'
-            return render_template('login.html', message=message)
+            return render_template('login.html', message=message, auth=('username' in session))
             
     else:
-        return render_template('login.html', message=message)
+        return render_template('login.html', message=message, auth=('username' in session))
 
 
 @app.route('/authenticated')
@@ -79,7 +79,7 @@ def authenticated():
     if "username" in session:
         username = session['username']
         
-        return render_template('authenticated.html', username=username.title())
+        return render_template('authenticated.html', username=username.title(), auth=('username' in session))
 
 
 @app.route('/upload')
@@ -87,7 +87,7 @@ def puploader_upload():
     if "username" in session:
         folders = [folder for folder in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], folder))]
         folders.sort()
-        return render_template('upload.html', folders=folders)
+        return render_template('upload.html', folders=folders, auth=('username' in session))
     
     else:
         return redirect(url_for('login'))
@@ -167,7 +167,7 @@ def render_gallery():
         folders.sort()
         photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
         
-        return render_template('gallery.html', photos=photos, folders=folders)
+        return render_template('gallery.html', photos=photos, folders=folders, auth=('username' in session))
     else:
         return redirect(url_for('login'))
 
@@ -183,7 +183,7 @@ def render_subfolder_gallery(subfolder):
         folders.sort()
         photos = [subfolder + '/' + photo for photo in os.listdir(subfolder_dir) if '.' in photo]
 
-        return render_template('gallery.html', photos=photos, folders=folders)
+        return render_template('gallery.html', photos=photos, folders=folders, auth=('username' in session))
     else:
         return redirect(url_for('login'))
     
@@ -207,12 +207,12 @@ def render_resources():
         except Exception as e:
             pup['photo'] = './static/assets/no_photo_avail.jpg'
 
-    return render_template('resources.html', organizations=organizations, pups=pups)
+    return render_template('resources.html', organizations=organizations, pups=pups, auth=('username' in session))
 
 
 @app.route('/about', methods=['GET'])
 def render_about():
-    return render_template('about.html')
+    return render_template('about.html', auth=('username' in session))
 
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -220,10 +220,10 @@ def logout():
     if 'username' in session:
         session.pop('username', None)
         
-        return render_template('logout.html')
+        return render_template('logout.html', auth=('username' in session))
     
     else:
-        return render_template('index_unauth.html')
+        return render_template('index_unauth.html', auth=('username' in session))
 
 
 if __name__ == '__main__':
