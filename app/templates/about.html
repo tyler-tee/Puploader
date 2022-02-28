@@ -1,9 +1,25 @@
-{% extends "base_unauth.html" %}
+{% extends "base.html" %}
 
 {% block title %}About{% endblock %}
 
 {% block main %}
-<div>
-    Coming soon!
-</div>
+<center>
+    <div class="mx-auto my-5" style="max-width: 27rem;">
+        <div class="card text-center">
+            <div class="card-header pb-0">
+                <h3>About Puploader</h3>
+            </div>
+            <div class="card-body pt-0">
+                <p class="card-text">Puploader is a labor of love. It is intended to provide information related to dogs in need and serve as an anonymous outlet of appreciation for the fluffier members of our families. Enjoy.</p>
+            </div>
+            <div class="card-footer">
+                <img title="Our family." src="./static/assets/about.jpg">
+                <center class="pt-1">
+                    <a href="https://linkedin.com/in/tyler-j-talaga" class="fa fa-linkedin"></a>
+                    <a href="https://github.com/tyler-tee" class="fa fa-github"></a>
+                </center>
+            </div>
+        </div> 
+    </div>
+</center>
 {% endblock %}
