@@ -103,51 +103,22 @@
   margin-top: 100px;
 }
 
+.navbar-nav
+{
+  display: inline-block;
+  padding: 5px;
+  font-size: 20px;
+  vertical-align: middle;
+}
+
 .navbar-brand
 {
   display: inline-block;
   margin-left: 10px;
-  height: 2em;
   font-size: 20px;
 }
 
 .nav-item
-{
-  display: inline-block;
-  height: 2em;
-  padding: 5px;
-  font-size: 20px;
-  text-align: center;
-}
-
-.nav-item.nav-link
-{
-  display: inline-block;
-  height: 2em;
-  padding: 5px;
-  font-size: 20px;
-  text-align: center;
-}
-
-.nav-item.dropdown-toggle
-{
-  display: inline-block;
-  height: 2em;
-  padding: 5px;
-  font-size: 20px;
-  text-align: center;
-}
-
-#navbarDropdown
-{
-  display: inline-block;
-  height: 2em;
-  padding: 5px;
-  font-size: 20px;
-  text-align: center;
-}
-
-#navbarDropdownToggle
 {
   display: inline-block;
   height: 2em;
