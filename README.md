@@ -30,7 +30,13 @@ To fix a bug or enhance an existing module, follow these steps:
 - Add changes to reflect the changes made
 - Commit your changes (`git commit -am 'Improve feature'`)
 - Push to the branch (`git push origin improve-feature`)
-- Create a Pull Request 
+- Create a Pull Request
+
+## To-Do
+[ ] Add S3 integration for Heroku deployment
+[ ] Add Okta integration for authentication
+[ ] Add Google login for authentication
+[ ] Add location input/collection for resources (Shelters/Adoptable pets)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
