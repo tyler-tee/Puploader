@@ -1,14 +1,14 @@
-{% extends "base_unauth.html" %}
+{% extends "base.html" %}
 
 {% block title %}Resources{% endblock %}
 
 {% block main %}
 <center>
-    <div class="card-header" data-toggle="collapse" data-target="#localPups" style="text-align: left; padding-left: 20px">
-        <button id="btnExpandLocalPups" type="button" class="btn btn-info py-0 px-0" style="margin: 0 auto" data-toggle="collapse" data-target="#localPups" title="Expand Pups">
-            <i class="material-icons text-center">expand_more</i>
-        </button>
+    <div class="card-header" data-toggle="collapse" data-target="#localPups" style="text-align: left; padding-left: 20px; width: 90%">
         Adoptable Dogs
+        <a id="btnExpandLocalPups" type="button" class="btn-floating indigo" style="margin: 0 auto; float: right" data-toggle="collapse" data-target="#localPups" title="Expand Pups">
+            <i class="material-icons text-center">expand_circle_down</i>
+        </a>        
     </div>
     <div id="localPups" class="card-body collapse">
         {% for pup in pups[:5] %}
@@ -68,11 +68,11 @@
         </a>
         {% endfor %}
     </div>
-    <div class="card-header" data-toggle="collapse" data-target="#genOrgs" style="text-align: left; padding-left: 20px">
-        <button id="btnExpandGenOrgs" type="button" class="btn btn-info py-0 px-0" style="margin: 0 auto" data-toggle="collapse" data-target="#genOrgs" title="Expand Orgs">
-            <i class="material-icons text-center">expand_more</i>
-        </button>
+    <div class="card-header" data-toggle="collapse" data-target="#genOrgs" style="text-align: left; padding-left: 20px; width: 90%">
         General Organizations
+         <a id="btnExpandGenOrgs" type="button" class="btn-floating indigo" style="margin: 0 auto; float: right" data-toggle="collapse" data-target="#genOrgs" title="Expand Orgs">
+            <i class="material-icons text-center">expand_circle_down</i>
+        </a>       
     </div>
     <div id="genOrgs" class="card-body collapse">
         {% for organization in organizations[:5] %}
