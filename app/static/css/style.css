@@ -111,7 +111,43 @@
   font-size: 20px;
 }
 
+.nav-item
+{
+  display: inline-block;
+  height: 2em;
+  padding: 5px;
+  font-size: 20px;
+  text-align: center;
+}
+
 .nav-item.nav-link
+{
+  display: inline-block;
+  height: 2em;
+  padding: 5px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.nav-item.dropdown-toggle
+{
+  display: inline-block;
+  height: 2em;
+  padding: 5px;
+  font-size: 20px;
+  text-align: center;
+}
+
+#navbarDropdown
+{
+  display: inline-block;
+  height: 2em;
+  padding: 5px;
+  font-size: 20px;
+  text-align: center;
+}
+
+#navbarDropdownToggle
 {
   display: inline-block;
   height: 2em;
