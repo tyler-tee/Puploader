@@ -219,6 +219,9 @@ def render_resources(resource):
             org['hours'] = ', '.join(i for i in org['hours'].values() if i)
     
         return render_template('organizations.html', organizations=organizations, auth=('username' in session))
+    
+    elif resource == 'charities':
+        return "Coming soon!"
 
 
 @app.route('/about', methods=['GET'])
