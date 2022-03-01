@@ -12,6 +12,7 @@ Simple Flask app built to receive, store, and serve dog photos. Uploading non-do
 ## Current Features
 - Multi-file upload
 - Live gallery
+- Local shelters/adoptable dogs information
 - User management supported by a MongoDB backend
 
 ## Built with 
@@ -36,7 +37,7 @@ To fix a bug or enhance an existing module, follow these steps:
 - [ ] Add S3 integration for Heroku deployment
 - [ ] Add Okta integration for authentication
 - [ ] Add Google login for authentication
-- [ ] Add location input/collection for resources (Shelters/Adoptable pets)
+- [X] Add location input/collection for resources (Shelters/Adoptable pets)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
