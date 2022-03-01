@@ -220,6 +220,10 @@ def render_resources(resource):
         for org in organizations:
             org['address'] = ', '.join(i for i in org['address'].values() if i)
             org['hours'] = ', '.join(i for i in org['hours'].values() if i)
+            try:
+                org['photo'] = org['photos'][0]['medium']
+            except Exception as e:
+                org['photo'] = ''
     
         return render_template('organizations.html', organizations=organizations, auth=('username' in session))
     
