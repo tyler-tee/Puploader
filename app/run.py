@@ -4,15 +4,19 @@ import json
 import os
 from werkzeug.utils import secure_filename
 from app import create_app
-from petfinder_api.petfinder_api import PetFinder
 
 
-app, users = create_app()
+app, users, petfinder_api = create_app()
 
 
 @app.route('/')
 def puploader_landing():
-    photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
+    if app.config['S3BUCKET']:
+        bucket_name = "https://puploader.s3.us-east-2.amazonaws.com/"
+        photos = [f'{bucket_name}' + photo for photo in ('pup11.jpg', 'pup12.jpg', 'pup21.jpg', 'pup22.jpg', 'pups.jpg')]
+    else:
+        photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
+        photos = [url_for('static', filename='uploads/' + photo) for photo in photos]
 
     if "username" in session:
         return render_template('index.html', photos=photos, auth=True)
@@ -190,7 +194,6 @@ def render_subfolder_gallery(subfolder):
     
 @app.route('/resources/<resource>', methods=['GET', 'POST'])
 def render_resources(resource):
-    petfinder_api = PetFinder(app.config['PETFINDER_KEY'], app.config['PETFINDER_SEC'])
     petfinder_api.auth()
     
     try:
