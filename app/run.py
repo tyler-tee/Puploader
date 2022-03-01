@@ -188,13 +188,19 @@ def render_subfolder_gallery(subfolder):
         return redirect(url_for('login'))
     
     
-@app.route('/resources/<resource>', methods=['GET'])
+@app.route('/resources/<resource>', methods=['GET', 'POST'])
 def render_resources(resource):
     petfinder_api = PetFinder(app.config['PETFINDER_KEY'], app.config['PETFINDER_SEC'])
     petfinder_api.auth()
     
+    try:
+        location = int(request.form.get('inputZip'))
+    except Exception as e:
+        print(e)
+        location = None
+    
     if resource == 'local_pups':
-        pups = petfinder_api.get_animals(type='dog')
+        pups = petfinder_api.get_animals(type='dog', location=location)
     
         for pup in pups:
             pup['contact']['address'] = ', '.join(i for i in pup['contact']['address'].values() if i)
@@ -206,7 +212,7 @@ def render_resources(resource):
         return render_template('pups.html', pups=pups, auth=('username' in session))
     
     elif resource == 'local_orgs':
-        organizations = petfinder_api.get_organizations(location=app.config['LOCATION'])
+        organizations = petfinder_api.get_organizations(location=location)
     
         for org in organizations:
             org['address'] = ', '.join(i for i in org['address'].values() if i)
