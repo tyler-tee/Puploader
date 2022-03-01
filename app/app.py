@@ -7,13 +7,13 @@ from petfinder_api.petfinder_api import PetFinder
 def create_app():
     app = Flask(__name__)
     
-    
     try:
         app.config.from_pyfile('./config/development.cfg')
     except FileNotFoundError:
         app.config.from_pyfile('./config/production.cfg')
+        
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') if os.os.environ.get('SECRET_KEY') else app.config['SECRET_KEY']
 
-    
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.mkdir(app.config['UPLOAD_FOLDER'])
     
