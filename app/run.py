@@ -188,26 +188,31 @@ def render_subfolder_gallery(subfolder):
         return redirect(url_for('login'))
     
     
-@app.route('/resources', methods=['GET'])
-def render_resources():
+@app.route('/resources/<resource>', methods=['GET'])
+def render_resources(resource):
     petfinder_api = PetFinder(app.config['PETFINDER_KEY'], app.config['PETFINDER_SEC'])
     petfinder_api.auth()
-    organizations = petfinder_api.get_organizations(location=app.config['LOCATION'])
     
-    for org in organizations:
-        org['address'] = ', '.join(i for i in org['address'].values() if i)
-        org['hours'] = ', '.join(i for i in org['hours'].values() if i)
+    if resource == 'local_pups':
+        pups = petfinder_api.get_animals(type='dog')
     
-    pups = petfinder_api.get_animals(type='dog')
-    
-    for pup in pups:
-        pup['contact']['address'] = ', '.join(i for i in pup['contact']['address'].values() if i)
-        try:
-            pup['photo'] = pup['photos'][0]['medium']
-        except Exception as e:
-            pup['photo'] = './static/assets/no_photo_avail.jpg'
+        for pup in pups:
+            pup['contact']['address'] = ', '.join(i for i in pup['contact']['address'].values() if i)
+            try:
+                pup['photo'] = pup['photos'][0]['medium']
+            except Exception as e:
+                pup['photo'] = url_for('static', filename='/assets/no_photo_avail.jpg')
 
-    return render_template('resources.html', organizations=organizations, pups=pups, auth=('username' in session))
+        return render_template('pups.html', pups=pups, auth=('username' in session))
+    
+    elif resource == 'local_orgs':
+        organizations = petfinder_api.get_organizations(location=app.config['LOCATION'])
+    
+        for org in organizations:
+            org['address'] = ', '.join(i for i in org['address'].values() if i)
+            org['hours'] = ', '.join(i for i in org['hours'].values() if i)
+    
+        return render_template('organizations.html', organizations=organizations, auth=('username' in session))
 
 
 @app.route('/about', methods=['GET'])

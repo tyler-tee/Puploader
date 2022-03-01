@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Organizations{% endblock %}
+
+{% block main %}
+
+<div class="card-header" style="text-align: center; width: 90%">
+    Organizations
+    <div style="justify-content: center; display: flex">
+        <form class="form-inline" action="#">
+        <input id="inputZip" placeholder="Zipcode" name="inputZip" style="width: 100px">
+        <button type="submit" class=" btn btn-primary"><i class="material-icons text-center">travel_explore</i></button>
+        </form>
+    </div>    
+</div>
+<div id="genOrgs" class="card-body">
+    {% for organization in organizations[:5] %}
+    <div class="org-container" style="float: left; width: 45%">
+        <div class="org-details">
+        <h1>{{ organization.name }}</h1>	
+        <p class="mission-statement pt-1">{{ organization.mission_statement }}</p>
+            <div class="org-control">
+                <center>
+                    <a href="{{ organization.social_media.facebook }}" class="fa fa-facebook"></a>
+                    <a href="{{ organization.social_media.twitter }}" class="fa fa-twitter"></a>
+                    <a href="{{ organization.social_media.youtube }}" class="fa fa-youtube"></a>
+                    <a href="{{ organization.social_media.instagram }}" class="fa fa-instagram"></a>
+                    <a href="{{ organization.social_media.pinterest }}" class="fa fa-pinterest"></a>
+                </center>
+            </div>	
+        </div>
+        <div class="org-image">
+            <img src="{{ organization['photos'][0]['medium'] }}" alt="">
+        <div class="org-info">
+                <h2>Details</h2>
+                <ul>
+                    <li><strong>Email : </strong>{{ organization.email }}</li>
+                    <li><strong>Phone : </strong>{{ organization.phone }}</li>                    
+                    <li><strong>Address : </strong>{{ organization.address }}</li>
+                    <li><strong>Hours : </strong>{{ organization.hours }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% for organization in organizations[5:] %}
+    <div class="org-container" style="float: right; width: 45%">
+        <div class="org-details">
+        <h1>{{ organization.name }}</h1>
+        <p class="mission-statement pt-1">{{ organization.mission_statement }}</p>
+            <div class="org-control">
+                <center>
+                    <a href="{{ organization.social_media.facebook }}" class="fa fa-facebook"></a>
+                    <a href="{{ organization.social_media.twitter }}" class="fa fa-twitter"></a>
+                    <a href="{{ organization.social_media.youtube }}" class="fa fa-youtube"></a>
+                    <a href="{{ organization.social_media.instagram }}" class="fa fa-instagram"></a>
+                    <a href="{{ organization.social_media.pinterest }}" class="fa fa-pinterest"></a>
+                </center>
+            </div>	
+        </div>
+        <div class="org-image">
+            <img src="{{ organization['photos'][0]['medium'] }}" alt="">
+        <div class="org-info">
+                <h2>Details</h2>
+                <ul>
+                    <li><strong>Email : </strong>{{ organization.email }}</li>
+                    <li><strong>Phone : </strong>{{ organization.phone }}</li>                    
+                    <li><strong>Address : </strong>{{ organization.address }}</li>
+                    <li><strong>Hours : </strong>{{ organization.hours }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

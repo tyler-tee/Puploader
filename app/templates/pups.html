@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Adoptable Dogs{% endblock %}
+
+{% block main %}
+
+<div class="card-header" style="text-align: center; width: 90%">
+    <h2>Adoptable Dogs</h2>
+    <div style="justify-content: center; display: flex">
+        <form class="form-inline" action="#">
+        <input id="inputZip" placeholder="Zipcode" name="inputZip" style="width: 100px">
+        <button type="submit" class=" btn btn-primary"><i class="material-icons text-center">travel_explore</i></button>
+        </form>
+    </div>
+</div>
+<div id="localPups" class="card-body">
+    {% for pup in pups[:5] %}
+    <a href="{{ pup.url }}">
+        <div class="org-container" style="float: left; width: 45%">
+            <div class="org-details">
+            <h1>{{ pup.name }}</h1>
+            <p class="mission-statement pt-1">{{ pup.description }}</p>
+            <h5>Details</h5>
+                <ul style="font-size: 12px; color: black">
+                    <li><strong>Gender: </strong>{{ pups.gender }}</li>
+                    <li><strong>Age: </strong> {{ pup.age }}</li>
+                    <li><strong>Primary Breed: </strong>{{ pup.breeds.primary }}</li>
+                    <li><strong>Size: </strong>{{ pup.size }}</li>
+                </ul>
+            </div>
+            <div class="org-image">
+                <img src="{{ pup['photo'] }}" alt="">
+            <div class="org-info">
+                    <h2>Info</h2>
+                    <ul>
+                        <li><strong>Email : </strong>{{ pup.email }}</li>
+                        <li><strong>Phone : </strong>{{ pup.phone }}</li>                    
+                        <li><strong>Address : </strong>{{ pup.address }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div> 
+    </a>
+    {% endfor %}
+    {% for pup in pups[5:] %}
+    <a href="{{ pup.url }}">
+        <div class="org-container" style="float: left; width: 45%">
+            <div class="org-details">
+            <h1>{{ pup.name }}</h1>
+            <p class="mission-statement pt-1">{{ pup.description }}</p>
+            <h5>Details</h5>
+                <ul style="font-size: 12px; color: black">
+                    <li><strong>Gender: </strong>{{ pups.gender }}</li>
+                    <li><strong>Age: </strong> {{ pup.age }}</li>
+                    <li><strong>Primary Breed: </strong>{{ pup.breeds.primary }}</li>
+                    <li><strong>Size: </strong>{{ pup.size }}</li>
+                </ul>
+            </div>
+            <div class="org-image">
+                <img src="{{ pup['photo'] }}" alt="">
+            <div class="org-info">
+                    <h2>Info</h2>
+                    <ul>
+                        <li><strong>Email : </strong>{{ pup.email }}</li>
+                        <li><strong>Phone : </strong>{{ pup.phone }}</li>                    
+                        <li><strong>Address : </strong>{{ pup.address }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div> 
+    </a>
+    {% endfor %}
+</div>
+
+{% endblock %}
