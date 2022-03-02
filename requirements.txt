@@ -1,4 +1,5 @@
 bcrypt
+boto3
 dnspython
 Flask
 gunicorn

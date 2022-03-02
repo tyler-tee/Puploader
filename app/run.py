@@ -1,6 +1,6 @@
 import bcrypt
+import boto3
 from flask import flash, redirect, render_template, request, session, url_for
-import json
 import os
 from werkzeug.utils import secure_filename
 from app import create_app
@@ -9,11 +9,20 @@ from app import create_app
 app, users, petfinder_api = create_app()
 
 
+def get_s3_photos():
+    s3 = boto3.client('s3')
+    objects = s3.list_objects_v2(Bucket='puploader')['Contents']
+    objects = [obj['Key'] for obj in objects]
+    
+    return objects
+
+
 @app.route('/')
 def puploader_landing():
-    if app.config['S3BUCKET']:
+    if app.config['S3_BUCKET']:
         bucket_name = "https://puploader.s3.us-east-2.amazonaws.com/"
-        photos = [f'{bucket_name}' + photo for photo in ('pup11.jpg', 'pup12.jpg', 'pup21.jpg', 'pup22.jpg', 'pups.jpg')]
+        photos = get_s3_photos()
+        photos = [f'{bucket_name}' + photo for photo in photos]
     else:
         photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
         photos = [url_for('static', filename='uploads/' + photo) for photo in photos]
