@@ -17,7 +17,11 @@
               </div>
               {% endif %}
               <div class="form-group form-group-lg">
-                <label for="inputUsername">Username</label>
+                <label for="inputFirstName">First Name</label>
+                <input name="inputFirstName" class="form-control form-control-lg" id="inputFirstName" placeholder="Enter First Name">
+              </div>
+              <div class="form-group form-group-lg">
+                <label for="inputUsername">Email Address</label>
                 <input name="inputUsername" class="form-control form-control-lg" id="inputUsername" placeholder="Enter Username">
               </div>
               <div class="form-group form-group-lg">
@@ -30,6 +34,17 @@
               </div>
               <div class="pt-3 d-flex">
                 <button type="submit" class="btn btn-info btn-block" style="width: 100%; font-size: 18px; color: white">Register</button>
+              </div>
+              <div class="or-container">
+                <div class="line-separator"></div>
+                <div class="or-label">or</div>
+                <div class="line-separator"></div>
+              </div>
+              <div class="pt-3 mt-0 d-flex">
+                <a class="btn btn-outline-dark mt-0" href="/google_auth" role="button" style="text-transform:none; vertical-align: middle; width: 100%">
+                  <img style="margin: bottom 5px; margin-right:5px; width: 45px;" alt="Google Register" src="./static/assets/Google_G_Logo.png" />
+                  Register with Google
+                </a>
               </div>
             </form>
           </div>

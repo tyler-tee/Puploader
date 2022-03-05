@@ -171,6 +171,25 @@
   text-align: center;
 }
 
+.or-container {
+  align-items: center;
+  color: #ccc;
+  display: flex;
+  margin: 5px 0
+}
+
+.line-separator {
+  background-color: #ccc;
+  flex-grow: 5;
+  height: 1px
+}
+
+.or-label {
+  flex-grow: 1;
+  margin: 0 15px;
+  text-align: center
+}
+
 .org-container {
   box-shadow: 0 15px 30px 1px grey;
 	background: rgba(255, 255, 255, 0.90);

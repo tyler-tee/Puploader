@@ -1,13 +1,39 @@
+from distutils.log import Log
+from enum import unique
 import bcrypt
 import boto3
 from flask import flash, redirect, render_template, request, session, url_for
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 import json
+from oauthlib.oauth2 import WebApplicationClient
 import os
+import requests
 from werkzeug.utils import secure_filename
 from app import create_app
+from user import User
 
 
 app, users, petfinder_api = create_app()
+
+
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+GOOGLE_DISCOVERY_URL = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
+
+def get_google_provider_cfg():
+    return requests.get(GOOGLE_DISCOVERY_URL).json()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return users.find_one({'user_id': user_id})['user_id']
 
 
 def get_s3_photos():
@@ -29,7 +55,8 @@ def puploader_landing():
         photos = [url_for('static', filename='uploads/' + photo) for photo in photos]
 
     if "username" in session:
-        return render_template('index.html', photos=photos, auth=True)
+        return render_template('index.html', photos=photos, auth=("username" in session))
+    
     else:
         return render_template('index_unauth.html', photos=photos, auth=False)
 
@@ -40,11 +67,12 @@ def register():
         return redirect(url_for('authenticated'))
     
     if request.method == 'POST':
+        name = request.form.get('inputFirstName')
         username = request.form.get('inputUsername').lower()
         password = request.form.get('inputPassword')
         password_conf = request.form.get('confirmPassword')
         
-        if users.find_one({'username': username}):
+        if users.find_one({'email': username}):
             return render_template('register.html', message='Username already taken.', auth=('username' in session))
         
         if password != password_conf:
@@ -52,9 +80,9 @@ def register():
         
         else:
             hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            users.insert_one({'username': username, 'password': hashed_pw})
+            users.insert_one({'email': username, 'password': hashed_pw})
             
-            return render_template('authenticated.html', username=username.title(), auth=('username' in session))
+            return render_template('authenticated.html', username=name, auth=('username' in session))
         
     return render_template('register.html', auth=('username' in session))
 
@@ -70,11 +98,11 @@ def login():
         username = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
         
-        user_record = users.find_one({'username': username.lower()})
+        user_record = users.find_one({'email': username.lower()})
         
         if user_record: 
             if bcrypt.checkpw(password.encode('utf-8'), user_record['password']):
-                session['username'] = user_record['username']
+                session['username'] = user_record['email']
                 return redirect(url_for('authenticated'))
             else:
                 message = 'Incorrect password - Please try again.'
@@ -88,12 +116,72 @@ def login():
         return render_template('login.html', message=message, auth=('username' in session))
 
 
+@app.route('/google_auth')
+def google_auth():
+    google_provider_cfg = get_google_provider_cfg()
+    auth_endpoint = google_provider_cfg['authorization_endpoint']
+    
+    request_uri = client.prepare_request_uri(auth_endpoint,
+                                             redirect_uri=request.base_url + "/callback",
+                                             scope=['openid', 'email', 'profile'],
+                                             )
+    
+    return redirect(request_uri)
+
+
+@app.route('/google_auth/callback')
+def google_auth_callback():
+    auth_code = request.args.get('code')
+    
+    google_provider_cfg = get_google_provider_cfg()
+    token_endpoint = google_provider_cfg['token_endpoint']
+    
+    token_url, headers, body = client.prepare_token_request(
+                                                            token_endpoint,
+                                                            authorization_response=request.url,
+                                                            redirect_url=request.base_url,
+                                                            code=auth_code
+                                                            )
+    
+    token_response = requests.post(token_url, headers=headers, data=body,
+                                   auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),)
+    
+    client.parse_request_body_response(json.dumps(token_response.json()))
+    
+    userinfo_endpoint = google_provider_cfg['userinfo_endpoint']
+    uri, headers, body = client.add_token(userinfo_endpoint)
+    userinfo_response = requests.get(uri, headers=headers, data=body)
+    
+    if userinfo_response.json().get('email_verified'):
+        unique_id = userinfo_response.json()["sub"]
+        users_email = userinfo_response.json()["email"]
+        # picture = userinfo_response.json()["picture"]
+        users_name = userinfo_response.json()["given_name"]
+    else:
+        print('User not verified.')
+        unique_id = userinfo_response.json()["sub"]
+        users_email = userinfo_response.json()["email"]
+        # picture = userinfo_response.json()["picture"]
+        users_name = userinfo_response.json()["given_name"]
+    
+    user = User(user_id=unique_id, name=users_name, email=users_email, profile_pic='')
+    
+    if not User.get(unique_id):
+        User.create(unique_id, users_name, users_email, 'pic_placeholder')
+    
+    login_user(user)
+    session['username'] = users_email
+        
+    return redirect(url_for('authenticated'))
+
+
 @app.route('/authenticated')
 def authenticated():
-    if "username" in session:
+    if  "username" in session:
         username = session['username']
+        name = users.find_one({'email': username})['name']
         
-        return render_template('authenticated.html', username=username.title(), auth=('username' in session))
+        return render_template('authenticated.html', username=name, auth=('username' in session))
 
 
 @app.route('/upload')
@@ -281,6 +369,7 @@ def render_about():
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     if 'username' in session:
+        logout_user()
         session.pop('username', None)
         
         return render_template('logout.html', auth=('username' in session))
@@ -290,4 +379,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, ssl_context="adhoc")
