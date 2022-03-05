@@ -1,13 +1,39 @@
+from distutils.log import Log
+from enum import unique
 import bcrypt
 import boto3
 from flask import flash, redirect, render_template, request, session, url_for
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 import json
+from oauthlib.oauth2 import WebApplicationClient
 import os
+import requests
 from werkzeug.utils import secure_filename
 from app import create_app
+from user import User
 
 
 app, users, petfinder_api = create_app()
+
+
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
+GOOGLE_DISCOVERY_URL = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
+
+def get_google_provider_cfg():
+    return requests.get(GOOGLE_DISCOVERY_URL).json()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return users.find_one({'user_id': user_id})['user_id']
 
 
 def get_s3_photos():
@@ -86,6 +112,64 @@ def login():
             
     else:
         return render_template('login.html', message=message, auth=('username' in session))
+
+
+@app.route('/google_auth')
+def google_auth():
+    google_provider_cfg = get_google_provider_cfg()
+    auth_endpoint = google_provider_cfg['authorization_endpoint']
+    
+    request_uri = client.prepare_request_uri(auth_endpoint,
+                                             redirect_uri=request.base_url + "/callback",
+                                             scope=['openid', 'email', 'profile'],
+                                             )
+    
+    return redirect(request_uri)
+
+
+@app.route('/google_auth/callback')
+def google_auth_callback():
+    auth_code = request.args.get('code')
+    
+    google_provider_cfg = get_google_provider_cfg()
+    token_endpoint = google_provider_cfg['token_endpoint']
+    
+    token_url, headers, body = client.prepare_token_request(
+                                                            token_endpoint,
+                                                            authorization_response=request.url,
+                                                            redirect_url=request.base_url,
+                                                            code=auth_code
+                                                            )
+    
+    token_response = requests.post(token_url, headers=headers, data=body,
+                                   auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),)
+    
+    client.parse_request_body_response(json.dumps(token_response.json()))
+    
+    userinfo_endpoint = google_provider_cfg['userinfo_endpoint']
+    uri, headers, body = client.add_token(userinfo_endpoint)
+    userinfo_response = requests.get(uri, headers=headers, data=body)
+    
+    if userinfo_response.json().get('email_verified'):
+        unique_id = userinfo_response.json()["sub"]
+        users_email = userinfo_response.json()["email"]
+        # picture = userinfo_response.json()["picture"]
+        users_name = userinfo_response.json()["given_name"]
+    else:
+        print('User not verified.')
+        unique_id = userinfo_response.json()["sub"]
+        users_email = userinfo_response.json()["email"]
+        # picture = userinfo_response.json()["picture"]
+        users_name = userinfo_response.json()["given_name"]
+    
+    user = User(user_id=unique_id, name=users_name, email=users_email, profile_pic='')
+    
+    if not User.get(unique_id):
+        User.create(unique_id, users_name, users_email, 'pic_placeholder')
+    
+    login_user(user)
+    
+    return redirect(url_for('authenticated'))
 
 
 @app.route('/authenticated')
@@ -290,4 +374,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, ssl_context="adhoc")
