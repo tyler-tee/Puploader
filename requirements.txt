@@ -2,8 +2,10 @@ bcrypt
 boto3
 dnspython
 Flask
+Flask-Login
 gunicorn
 Jinja2
+oauthlib
 pymongo
 requests
 whitenoise
