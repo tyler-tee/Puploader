@@ -78,7 +78,7 @@ def register():
         
         else:
             hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            users.insert_one({'email': username, 'password': hashed_pw})
+            users.insert_one({'email': username, 'name': name, 'password': hashed_pw})
             
             return render_template('authenticated.html', username=name, auth=('username' in session))
         
