@@ -54,11 +54,9 @@ def puploader_landing():
         photos = [photo for photo in os.listdir(app.config['UPLOAD_FOLDER']) if '.' in photo]
         photos = [url_for('static', filename='uploads/' + photo) for photo in photos]
 
-    if User.is_authenticated:
-        return render_template('index.html', photos=photos, auth=User.is_authenticated)
-    
-    elif "username" in session:
+    if "username" in session:
         return render_template('index.html', photos=photos, auth=("username" in session))
+    
     else:
         return render_template('index_unauth.html', photos=photos, auth=False)
 
@@ -174,21 +172,18 @@ def google_auth_callback():
         User.create(unique_id, users_name, users_email, 'pic_placeholder')
     
     login_user(user)
-    
+    session['username'] = users_email
+        
     return redirect(url_for('authenticated'))
 
 
 @app.route('/authenticated')
 def authenticated():
-    if User.is_authenticated:
-        return render_template('authenticated.html', username=User, auth=True)
-    
-    elif "username" in session:
+    if  "username" in session:
         username = session['username']
+        name = users.find_one({'email': username})['name']
         
-        return render_template('authenticated.html', username=username.title(), auth=('username' in session))
-    
-
+        return render_template('authenticated.html', username=name, auth=('username' in session))
 
 
 @app.route('/upload')
@@ -375,12 +370,7 @@ def render_about():
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
-    if User.is_authenticated:
-        logout_user()
-        
-        return render_template('logout.html', auth=User.is_authenticated)
-        
-    elif 'username' in session:
+    if 'username' in session:
         session.pop('username', None)
         
         return render_template('logout.html', auth=('username' in session))
