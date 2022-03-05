@@ -1,6 +1,7 @@
 import bcrypt
 import boto3
 from flask import flash, redirect, render_template, request, session, url_for
+import json
 import os
 from werkzeug.utils import secure_filename
 from app import create_app
@@ -110,7 +111,7 @@ def dir_cleanup():
     files = {i: os.path.getmtime(i) for i in os.listdir(app.config['UPLOAD_FOLDER'])}
     
     os.remove(files[0][0])
-
+    
 
 @app.route('/uploaded', methods=['GET', 'POST'])
 def upload_file():
@@ -128,18 +129,31 @@ def upload_file():
             else:
                 upload_folder = app.config['UPLOAD_FOLDER']
             
-            for file in files:
-                extension = file.filename.split('.')[-1].lower()
-                
-                if extension in ('gif', 'jpg', 'jpeg', 'png'): # Check for allowed extensions
-                    # If filename is a duplicate, tag w/ _dupe
-                    while file.filename in os.listdir(upload_folder):
-                        file.filename = '.'.join(file.filename.split('.')[:-1]) + '_dupe.' + extension
+            if app.config['PRIVATE']:
+                for file in files:
+                    extension = file.filename.split('.')[-1].lower()
                     
-                    if len(os.listdir('.')) >= app.config['UPLOAD_FOLDER_MAX']:
-                        dir_cleanup()
+                    if extension in ('gif', 'jpg', 'jpeg', 'png'): # Check for allowed extensions
+                        # If filename is a duplicate, tag w/ _dupe
+                        while file.filename in os.listdir(upload_folder):
+                            file.filename = '.'.join(file.filename.split('.')[:-1]) + '_dupe.' + extension
                         
-                    file.save(os.path.join(upload_folder, secure_filename(file.filename)))
+                        if len(os.listdir('.')) >= app.config['UPLOAD_FOLDER_MAX']:
+                            dir_cleanup()
+                        
+                        file.save(os.path.join(upload_folder, secure_filename(file.filename)))
+            else:
+                for file in files:
+                    extension = file.filename.split('.')[-1].lower()
+                    
+                    if extension in ('gif', 'jpg', 'jpeg', 'png'): # Check for allowed extensions
+                        # If filename is a duplicate, tag w/ _dupe
+                        while file.filename in get_s3_photos():
+                            file.filename = '.'.join(file.filename.split('.')[:-1]) + '_dupe.' + extension                
+                        
+                        # Upload photo to s3 bucket
+                        bucket = boto3.resource('s3').Bucket('puploader')
+                        bucket.Object(file.filename).put(Body=file)
                 
             flash('File(s) uploaded successfully!', 'success')
 
@@ -150,6 +164,25 @@ def upload_file():
     else:
         return redirect(url_for('login'))
     
+    
+@app.route('/sign_s3/')
+def sign_s3():
+  S3_BUCKET = os.environ.get('S3_BUCKET') if os.environ.get('S3_BUCKET') else app.config['S3_BUCKET']
+  file_name = request.args.get('file_name')
+  file_type = request.args.get('file_type')
+  s3 = boto3.client('s3')
+  presigned_post = s3.generate_presigned_post(Bucket=S3_BUCKET, Key=file_name,
+                                              Fields = {"acl": "public-read", "Content-Type": file_type},
+                                              Conditions = [
+                                                            {"acl": "public-read"},
+                                                            {"Content-Type": file_type}
+                                                            ],
+                                              ExpiresIn = 3600
+                                              )
+  
+  return json.dumps({'data': presigned_post,
+                    'url': f'https://{S3_BUCKET}.s3.amazonaws.com/{file_name}' % (S3_BUCKET, file_name)})
+
     
 @app.route('/new_folder', methods=['POST', 'GET'])
 def create_new_folder():
