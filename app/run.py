@@ -63,18 +63,16 @@ def puploader_landing():
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
-    if User.is_authenticated:
-        return redirect(url_for('authenticated'))
-    
     if "username" in session:
         return redirect(url_for('authenticated'))
     
     if request.method == 'POST':
+        name = request.form.get('inputFirstName')
         username = request.form.get('inputUsername').lower()
         password = request.form.get('inputPassword')
         password_conf = request.form.get('confirmPassword')
         
-        if users.find_one({'username': username}):
+        if users.find_one({'email': username}):
             return render_template('register.html', message='Username already taken.', auth=('username' in session))
         
         if password != password_conf:
@@ -82,9 +80,9 @@ def register():
         
         else:
             hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            users.insert_one({'username': username, 'password': hashed_pw})
+            users.insert_one({'email': username, 'password': hashed_pw})
             
-            return render_template('authenticated.html', username=username.title(), auth=('username' in session))
+            return render_template('authenticated.html', username=name, auth=('username' in session))
         
     return render_template('register.html', auth=('username' in session))
 
@@ -100,11 +98,11 @@ def login():
         username = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
         
-        user_record = users.find_one({'username': username.lower()})
+        user_record = users.find_one({'email': username.lower()})
         
         if user_record: 
             if bcrypt.checkpw(password.encode('utf-8'), user_record['password']):
-                session['username'] = user_record['username']
+                session['username'] = user_record['email']
                 return redirect(url_for('authenticated'))
             else:
                 message = 'Incorrect password - Please try again.'
@@ -371,6 +369,7 @@ def render_about():
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     if 'username' in session:
+        logout_user()
         session.pop('username', None)
         
         return render_template('logout.html', auth=('username' in session))
