@@ -37,7 +37,7 @@ To fix a bug or enhance an existing module, follow these steps:
 - Create a Pull Request
 
 ## To-Do
-- [ ] Add S3 integration for Heroku deployment
+- [X] Add S3 integration for Heroku deployment
 - [ ] Add Okta integration for authentication
 - [ ] Add Google login for authentication
 - [X] Add location input/collection for resources (Shelters/Adoptable pets)
