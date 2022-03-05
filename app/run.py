@@ -1,9 +1,7 @@
-from distutils.log import Log
-from enum import unique
 import bcrypt
 import boto3
 from flask import flash, redirect, render_template, request, session, url_for
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_login import LoginManager, login_user, logout_user
 import json
 from oauthlib.oauth2 import WebApplicationClient
 import os
