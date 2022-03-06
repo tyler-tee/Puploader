@@ -1,6 +1,11 @@
+"""
+Puploader's app factory. Primarily called from run.py in order to execute the application.
+"""
 import os
 from flask import Flask
 import pymongo
+from views.auth import auth
+from views.photos import photos
 from petfinder_api.petfinder_api import PetFinder
 
 
@@ -11,6 +16,9 @@ def create_app():
         Base application, petfinder_api instance, and MongoDB connection.
     """
     app = Flask(__name__)
+
+    app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(photos, url_prefix='/')
 
     try:
         app.config.from_pyfile('./config/development.cfg')
