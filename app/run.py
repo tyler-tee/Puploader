@@ -47,10 +47,7 @@ def render_resources(resource):
     """
     petfinder_api.auth()
 
-    try:
-        location = int(request.form.get('inputZip'))
-    except ValueError:
-        location = None
+    location = request.form.get('inputZip')
 
     if resource == 'local_pups':
         pups = petfinder_api.get_animals(type='dog', location=location)
@@ -63,7 +60,7 @@ def render_resources(resource):
             except IndexError:
                 pup['photo'] = url_for('static', filename='/assets/no_photo_avail.jpg')
 
-        return render_template('pups.html', pups=pups, auth=('username' in session))
+        return render_template('/resources/pups.html', pups=pups, auth=('username' in session))
 
     elif resource == 'local_orgs':
         organizations = petfinder_api.get_organizations(location=location)
@@ -76,12 +73,12 @@ def render_resources(resource):
             except IndexError:
                 org['photo'] = ''
 
-        return render_template('organizations.html',
+        return render_template('/resources/organizations.html',
                                organizations=organizations,
                                auth=('username' in session))
 
     elif resource == 'charities':
-        return render_template('charities.html')
+        return render_template('/resources/charities.html')
 
     return redirect('/')
 
