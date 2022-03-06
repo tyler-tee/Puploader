@@ -55,8 +55,8 @@ def puploader_landing():
     if "username" in session:
         return render_template('index.html', photos=photos, auth=("username" in session))
 
-    else:
-        return render_template('index_unauth.html', photos=photos, auth=False)
+
+    return render_template('index_unauth.html', photos=photos, auth=False)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -78,13 +78,12 @@ def register():
         if password != password_conf:
             return 'Passwords must match.'
 
-        else:
-            hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            users.insert_one({'email': username, 'name': name, 'password': hashed_pw})
+        hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        users.insert_one({'email': username, 'name': name, 'password': hashed_pw})
 
-            return render_template('authenticated.html',
-                                   username=name,
-                                   auth=('username' in session))
+        return render_template('authenticated.html',
+                                username=name,
+                                auth=('username' in session))
 
     return render_template('register.html', auth=('username' in session))
 
@@ -194,8 +193,7 @@ def puploader_upload():
         folders.sort()
         return render_template('upload.html', folders=folders, auth=('username' in session))
 
-    else:
-        return redirect(url_for('login'))
+    return redirect(url_for('login'))
 
 
 def dir_cleanup():
@@ -253,8 +251,7 @@ def upload_file():
 
             return redirect('/upload')
 
-        else:
-            return 'Something went wrong - Please try again.'
+        return 'Something went wrong - Please try again.'
     else:
         return redirect(url_for('login'))
 
@@ -318,8 +315,8 @@ def render_gallery():
                                photos=photos,
                                folders=folders,
                                auth=('username' in session))
-    else:
-        return redirect(url_for('login'))
+    
+    return redirect(url_for('login'))
 
 
 @app.route('/gallery/<subfolder>', methods=['GET'])
@@ -339,8 +336,8 @@ def render_subfolder_gallery(subfolder):
                                photos=photos,
                                folders=folders,
                                auth=('username' in session))
-    else:
-        return redirect(url_for('login'))
+
+    return redirect(url_for('login'))
 
 
 @app.route('/resources/<resource>', methods=['GET', 'POST'])
@@ -381,7 +378,7 @@ def render_resources(resource):
                                auth=('username' in session))
 
     elif resource == 'charities':
-        return "Coming soon!"
+        return render_template('charities.html')
 
 
 @app.route('/about', methods=['GET'])
@@ -397,8 +394,7 @@ def logout():
 
         return render_template('logout.html', auth=('username' in session))
 
-    else:
-        return render_template('index_unauth.html', auth=('username' in session))
+    return render_template('index_unauth.html', auth=('username' in session))
 
 
 if __name__ == '__main__':
