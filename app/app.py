@@ -18,7 +18,7 @@ def create_app():
         app.config.from_pyfile('./config/production.cfg')
 
     if os.environ.get('SECRET_KEY'):
-        app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') 
+        app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.mkdir(app.config['UPLOAD_FOLDER'])

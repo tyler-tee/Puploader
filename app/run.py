@@ -113,8 +113,7 @@ def login():
             message = 'Username not found - Please check and try again.'
             return render_template('login.html', message=message, auth=('username' in session))
 
-    else:
-        return render_template('login.html', message=message, auth=('username' in session))
+    return render_template('login.html', message=message, auth=('username' in session))
 
 
 @app.route('/google_auth')
@@ -183,6 +182,8 @@ def authenticated():
         name = users.find_one({'email': username})['name']
 
         return render_template('authenticated.html', username=name, auth=('username' in session))
+    
+    return redirect('/')
 
 
 @app.route('/upload')
@@ -252,8 +253,8 @@ def upload_file():
             return redirect('/upload')
 
         return 'Something went wrong - Please try again.'
-    else:
-        return redirect(url_for('login'))
+
+    return redirect(url_for('login'))
 
 
 @app.route('/sign_s3/')
@@ -315,7 +316,7 @@ def render_gallery():
                                photos=photos,
                                folders=folders,
                                auth=('username' in session))
-    
+
     return redirect(url_for('login'))
 
 
@@ -379,6 +380,8 @@ def render_resources(resource):
 
     elif resource == 'charities':
         return render_template('charities.html')
+
+    return redirect('/')
 
 
 @app.route('/about', methods=['GET'])
