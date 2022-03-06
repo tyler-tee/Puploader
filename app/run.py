@@ -3,11 +3,21 @@ This is the primary entrypoint for Puploader.
 """
 import os
 from flask import redirect, render_template, request, session, url_for
+from flask_login import LoginManager
 from views.photos import get_s3_photos
 from app import create_app
 
 
 app, users, petfinder_api = create_app()
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    """
+    Retrieve user information based on their unique ID.
+    """
+    return users.find_one({'user_id': user_id})['user_id']
 
 
 @app.route('/')

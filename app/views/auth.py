@@ -4,25 +4,15 @@ View responsible for authentication-related functions within Puploader.
 import json
 import os
 import bcrypt
-from flask import (Blueprint, current_app, redirect,
-                   render_template, request, session, url_for)
-from flask_login import login_user, logout_user, LoginManager
+from flask import (Blueprint, redirect, render_template,
+                   request, session, url_for)
+from flask_login import login_user, logout_user
 from oauthlib.oauth2 import WebApplicationClient
 import pymongo
 import requests
 from user import User
 
 auth = Blueprint('auth', __name__, template_folder='templates')
-
-login_manager = LoginManager()
-login_manager.init_app(current_app)
-
-@login_manager.user_loader
-def load_user(user_id):
-    """
-    Retrieve user information based on their unique ID.
-    """
-    return users.find_one({'user_id': user_id})['user_id']
 
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
