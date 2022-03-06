@@ -1,4 +1,5 @@
 # Puploader
+[![Pylint](https://github.com/tyler-tee/Puploader/actions/workflows/pylint.yml/badge.svg?branch=master&event=push)](https://github.com/tyler-tee/Puploader/actions/workflows/pylint.yml)
 <table>
 <tr>
 <td>
