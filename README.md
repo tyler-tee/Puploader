@@ -1,5 +1,9 @@
 # Puploader
+<div align="center">
+  
 [![Pylint](https://github.com/tyler-tee/Puploader/actions/workflows/pylint.yml/badge.svg?branch=master&event=push)](https://github.com/tyler-tee/Puploader/actions/workflows/pylint.yml)
+
+</div>
 <table>
 <tr>
 <td>
