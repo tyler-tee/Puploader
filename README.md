@@ -42,7 +42,7 @@ To fix a bug or enhance an existing module, follow these steps:
 - Create a Pull Request
 
 ## To-Do
-- [ ] Add animal-friendly charities to 'Resources'
+- [ ] Add animal-friendly charities to 'Resources' (25%)
 - [X] Add S3 integration for Heroku deployment
 - [ ] Add Okta integration for authentication
 - [X] Add Google login for authentication
