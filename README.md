@@ -12,7 +12,7 @@ Simple Flask app built to receive, store, and serve dog photos. Uploading non-do
 </tr>
 </table>
 
-![Puploader](https://user-images.githubusercontent.com/64701075/155628298-1d59600f-3b6e-469a-bc09-c9b87f3be5d3.png)
+![Puploader](https://user-images.githubusercontent.com/64701075/156957751-10d46cb2-9b73-4432-8097-417181d9e62e.png)
 
 ## Preview
 - Current iteration live [here](https://puploader.herokuapp.com)
