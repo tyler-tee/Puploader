@@ -5,7 +5,7 @@
 {% block main %}
 
 <div class="card-header" style="text-align: center; width: 90%">
-    <h3>Animal-Friendly Charities</h3>
+    <h1>Animal-Friendly Charities</h1>
 </div>
 <div id="charities" class="card-body">
     {% for charity in charities %}
@@ -26,6 +26,7 @@
                         <li><strong>Website: </strong>{{ charity.websiteURL }}</li>
                         <li><strong>Address: </strong>{{ charity.address }}</li>
                         <li><strong>EIN: </strong>{{ charity.organization.ein }}</li>
+                        <li><strong>Deductability: </strong>{{ charity.irsClassification.deductibility }}</li>
                     </ul>
                 </div>
             </div>

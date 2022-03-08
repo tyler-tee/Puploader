@@ -206,7 +206,7 @@
 	padding: 30px;
 	height: 100%;
 	float: left;
-	width: 40%;
+	width: 50%;
 }
 
 .org-container .org-details h1{
@@ -250,13 +250,11 @@
 
 .org-image {
     transition: all 0.3s ease-out;
-    display: inline-block;
     position: relative;
     overflow: hidden;
     height: 100%;
     float: right;
     width: 45%;
-    display: inline-block;
   }
 
 .org-container img {width: 100%;height: 100%;}
