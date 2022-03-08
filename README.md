@@ -44,10 +44,10 @@ To fix a bug or enhance an existing module, follow these steps:
 ## To-Do
 - [ ] Add local Veterinary clinic information
 - [ ] Add Okta integration for authentication
-- [X] Add animal-friendly charities to 'Resources' (25%)
-- [X] Add S3 integration for Heroku deployment
-- [X] Add Google login for authentication
-- [X] Add location input/collection for resources (Shelters/Adoptable pets)
+- [X] ~~Add animal-friendly charities to 'Resources'~~
+- [X] ~~Add S3 integration for Heroku deployment~~
+- [X] ~~Add Google login for authentication~~
+- [X] ~~Add location input/collection for resources (Shelters/Adoptable pets)~~
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
