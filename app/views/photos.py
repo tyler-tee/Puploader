@@ -57,7 +57,7 @@ def upload_file():
     whereas a publicly-available instance would upload to an S3 bucket instead.
     """
     if "username" in session:
-        if request.method == 'POST': # Check for appropriate method
+        if request.method == 'POST':  # Check for appropriate method
             # Proceed if there are files to upload - Else notify user.
             files = request.files.getlist('files')
 
@@ -75,7 +75,7 @@ def upload_file():
                 for file in files:
                     extension = file.filename.split('.')[-1].lower()
 
-                    if extension in ('gif', 'jpg', 'jpeg', 'png'): # Check for allowed extensions
+                    if extension in ('gif', 'jpg', 'jpeg', 'png'):  # Check for allowed extensions
                         # If filename is a duplicate, tag w/ _dupe
                         while file.filename in os.listdir(upload_folder):
                             file.filename = '.'.join(file.filename.split('.')[:-1])
@@ -89,7 +89,7 @@ def upload_file():
                 for file in files:
                     extension = file.filename.split('.')[-1].lower()
 
-                    if extension in ('gif', 'jpg', 'jpeg', 'png'): # Check for allowed extensions
+                    if extension in ('gif', 'jpg', 'jpeg', 'png'):  # Check for allowed extensions
                         # If filename is a duplicate, tag w/ _dupe
                         while file.filename in get_s3_photos():
                             file.filename = '.'.join(file.filename.split('.')[:-1])
@@ -122,13 +122,13 @@ def sign_s3():
     file_type = request.args.get('file_type')
     s3_client = boto3.client('s3')
     presigned_post = s3_client.generate_presigned_post(Bucket=s3_bucket, Key=file_name,
-                                                       Fields = {"acl": "public-read",
-                                                                "Content-Type": file_type},
-                                                       Conditions = [
+                                                       Fields={"acl": "public-read",
+                                                               "Content-Type": file_type},
+                                                       Conditions=[
                                                                     {"acl": "public-read"},
                                                                     {"Content-Type": file_type}
                                                                     ],
-                                                       ExpiresIn = 3600
+                                                       ExpiresIn=3600
                                                        )
 
     return json.dumps({'data': presigned_post,
@@ -172,7 +172,7 @@ def render_gallery():
                    if os.path.isdir(os.path.join(current_app.config['UPLOAD_FOLDER'], folder))]
         folders.sort()
         photo_lst = [photo for photo in os.listdir(current_app.config['UPLOAD_FOLDER'])
-                  if '.' in photo]
+                     if '.' in photo]
 
         return render_template('/photos/gallery.html',
                                photos=photo_lst,
@@ -196,7 +196,7 @@ def render_subfolder_gallery(subfolder):
                    if os.path.isdir(os.path.join(subfolder_dir, folder))]
         folders.sort()
         photo_lst = [subfolder + '/' + photo for photo in os.listdir(subfolder_dir)
-                  if '.' in photo]
+                     if '.' in photo]
 
         return render_template('/photos/gallery.html',
                                photos=photo_lst,

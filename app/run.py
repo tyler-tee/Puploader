@@ -2,13 +2,13 @@
 This is the primary entrypoint for Puploader.
 """
 import os
-from flask import redirect, render_template, request, session, url_for
+from flask import render_template, session, url_for
 from flask_login import LoginManager
 from views.photos import get_s3_photos
 from app import create_app
 
 
-app, users, petfinder_api = create_app()
+app, users = create_app()
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -39,49 +39,6 @@ def puploader_landing():
         return render_template('index.html', photos=photos, auth=("username" in session))
 
     return render_template('index_unauth.html', photos=photos, auth=False)
-
-
-@app.route('/resources/<resource>', methods=['GET', 'POST'])
-def render_resources(resource):
-    """
-    Route responsible for rendering pages related to animal-friendly resources.
-    """
-    petfinder_api.auth()
-
-    location = request.form.get('inputZip')
-
-    if resource == 'local_pups':
-        pups = petfinder_api.get_animals(type='dog', location=location)
-
-        for pup in pups:
-            pup['contact']['address'] = ', '.join(i for i in pup['contact']['address'].values()
-                                                  if i)
-            try:
-                pup['photo'] = pup['photos'][0]['medium']
-            except IndexError:
-                pup['photo'] = url_for('static', filename='/assets/no_photo_avail.jpg')
-
-        return render_template('/resources/pups.html', pups=pups, auth=('username' in session))
-
-    elif resource == 'local_orgs':
-        organizations = petfinder_api.get_organizations(location=location)
-
-        for org in organizations:
-            org['address'] = ', '.join(i for i in org['address'].values() if i)
-            org['hours'] = ', '.join(i for i in org['hours'].values() if i)
-            try:
-                org['photo'] = org['photos'][0]['medium']
-            except IndexError:
-                org['photo'] = ''
-
-        return render_template('/resources/organizations.html',
-                               organizations=organizations,
-                               auth=('username' in session))
-
-    elif resource == 'charities':
-        return render_template('/resources/charities.html')
-
-    return redirect('/')
 
 
 @app.route('/about', methods=['GET'])

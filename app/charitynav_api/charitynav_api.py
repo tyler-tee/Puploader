@@ -26,6 +26,7 @@ class CharityNav_API:
                 "app_key": self.app_key,
                 "categoryID": category_id
                 }
+        params.update(**kwargs)
 
         orgs = self.client.get(f"{self.base_url}/organizations", params=params)
 

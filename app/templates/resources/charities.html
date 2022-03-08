@@ -4,6 +4,34 @@
 
 {% block main %}
 
-<h1>Charities</h1>
+<div class="card-header" style="text-align: center; width: 90%">
+    <h3>Animal-Friendly Charities</h3>
+</div>
+<div id="charities" class="card-body">
+    {% for charity in charities %}
+    <a href="{{ charity.websiteURL }}">
+        <div class="org-container" style="float: left; width: 45%">
+            <div class="org-details">
+            <h5>{{ charity.charityName }}</h5>
+            <p class="mission-statement pt-1">{{ charity.tagLine }}</p>
+                <div style="font-size: 8px; color: black">
+                    <p>{{ charity.mission }}</p>
+                </div>
+            </div>
+            <div class="org-image">
+                <img src="{{ charity['category']['image'] }}" alt="">
+            <div class="org-info">
+                    <h2>Info</h2>
+                    <ul>
+                        <li><strong>Website: </strong>{{ charity.websiteURL }}</li>
+                        <li><strong>Address: </strong>{{ charity.address }}</li>
+                        <li><strong>EIN: </strong>{{ charity.organization.ein }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div> 
+    </a>
+    {% endfor %}
+</div>
 
 {% endblock %}

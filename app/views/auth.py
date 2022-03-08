@@ -23,6 +23,7 @@ GOOGLE_DISCOVERY_URL = (
 
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
+
 def get_google_provider_cfg():
     """
     Retrieve Google's Provider resource - For use with Google authentication.
@@ -73,8 +74,8 @@ def register():
         users.insert_one({'email': username, 'name': name, 'password': hashed_pw})
 
         return render_template('/auth/authenticated.html',
-                                username=name,
-                                auth=('username' in session))
+                               username=name,
+                               auth=('username' in session))
 
     return render_template('/auth/register.html', auth=('username' in session))
 
@@ -190,7 +191,7 @@ def authenticated():
     Intermediary landing after users login/register.
     Automatically redirects to index.
     """
-    if  "username" in session:
+    if "username" in session:
         username = session['username']
         name = users.find_one({'email': username})['name']
 

@@ -6,7 +6,7 @@ from flask import Flask
 import pymongo
 from views.auth import auth
 from views.photos import photos
-from petfinder_api.petfinder_api import PetFinder
+from views.resources import resources
 
 
 def create_app():
@@ -19,6 +19,7 @@ def create_app():
 
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(photos, url_prefix='/')
+    app.register_blueprint(resources, url_prefix='/')
 
     try:
         app.config.from_pyfile('./config/development.cfg')
@@ -40,11 +41,4 @@ def create_app():
     database = client['AUTH']
     users = database['USERS']
 
-    if os.environ.get('PETFINDER_KEY') and os.environ.get('PETFINDER_SEC'):
-        petfinder_api = PetFinder(os.environ.get('PETFINDER_KEY'),
-                                  os.environ.get('PETFINDER_SEC'))
-    else:
-        petfinder_api = PetFinder(app.config['PETFINDER_KEY'],
-                                  app.config['PETFINDER_SEC'])
-
-    return app, users, petfinder_api
+    return app, users

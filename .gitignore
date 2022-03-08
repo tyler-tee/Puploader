@@ -11,3 +11,4 @@ app/config.json
 app/config/development.cfg
 app/orgs.json
 app/charitynav_api/orgs_response.json
+app/config/config.json

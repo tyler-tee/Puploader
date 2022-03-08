@@ -46,7 +46,7 @@
     {% for organization in organizations[5:] %}
     <div class="org-container" style="float: right; width: 45%">
         <div class="org-details">
-        <h1>{{ organization.name }}</h1>
+        <h3>{{ organization.name }}</h3>
         <p class="mission-statement pt-1">{{ organization.mission_statement }}</p>
             <div class="org-control">
                 <center>
@@ -61,7 +61,7 @@
         <div class="org-image">
             <img src="{{ organization.photo }}" alt="">
         <div class="org-info">
-                <h2>Details</h2>
+                <h5>Details</h5>
                 <ul>
                     <li><strong>Email : </strong>{{ organization.email }}</li>
                     <li><strong>Phone : </strong>{{ organization.phone }}</li>                    
