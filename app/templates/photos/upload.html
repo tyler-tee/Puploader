@@ -39,7 +39,7 @@
                   </div>
                   <input class="form-control" style="margin-top: 5px" type="file" id="files" name="files" multiple />
                   <div class="text-center m-t-20">
-                    <button type="submit" class="btn btn-info">Upload</button>
+                    <button type="submit" class="g-recaptcha btn btn-info" data-sitekey="6LeMP3chAAAAAHpppkXWOzKntakid7RGsGzt2M1R" data-callback="onSubmit" data-action="submit">Upload</button>
                   </div>
                 </div>
               </div>
@@ -73,4 +73,13 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block script %}
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script>
+  function onSubmit(token) {
+    document.getElementById("demo-form").submit();
+  }
+</script>
 {% endblock %}
