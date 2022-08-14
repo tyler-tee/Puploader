@@ -9,6 +9,7 @@ from flask import (Blueprint, current_app, flash,
                    redirect, render_template, request,
                    session, url_for)
 from werkzeug.utils import secure_filename
+import telegram
 
 
 photos = Blueprint('photos', __name__, template_folder='templates')
@@ -47,6 +48,17 @@ def dir_cleanup():
     files = {i: os.path.getmtime(i) for i in os.listdir(current_app.config['UPLOAD_FOLDER'])}
 
     os.remove(files[0][0])
+    
+
+def bot_request(photo):
+    telegram_chat = current_app.config['TELEGRAM_CHAT']
+
+    bot = telegram.Bot(token=current_app.config['TELEGRAM_TOKEN'])
+
+    bot.send_message(telegram_chat,
+                     text='A new photo has been uploaded!')
+    bot.send_photo(telegram_chat,
+                   photo=photo)
 
 
 @photos.route('/uploaded', methods=['GET', 'POST'])
@@ -97,9 +109,10 @@ def upload_file():
 
                         # Upload photo to s3 bucket
                         bucket = boto3.resource('s3').Bucket('puploader')
-                        bucket.Object(file.filename).put(Body=file)
+                        # bucket.Object(file.filename).put(Body=file)
+                        bot_request(file)
 
-            flash('File(s) uploaded successfully!', 'success')
+            flash('File(s) uploaded for review!', 'success')
 
             return redirect('/upload')
 
