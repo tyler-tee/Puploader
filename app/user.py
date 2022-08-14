@@ -1,7 +1,10 @@
+import os
 from flask_login import UserMixin
 import pymongo
 
-client = pymongo.MongoClient('127.0.0.1', 27017)
+# mongo_uri = os.environ.get('MONGODB_URI')
+mongo_uri = 'mongodb+srv://puploader:LEXYNl4wudDCT3ID@puploaderprod.dv1xfp9.mongodb.net/?retryWrites=true&w=majority&ssl=true'
+client = pymongo.MongoClient(mongo_uri, 27017)
 db = client['AUTH']
 users = db['USERS']
 

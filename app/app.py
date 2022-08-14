@@ -3,6 +3,7 @@ Puploader's app factory. Primarily called from run.py in order to execute the ap
 """
 import os
 from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 import pymongo
 from views.auth import auth
 from views.photos import photos
@@ -20,6 +21,8 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(photos, url_prefix='/')
     app.register_blueprint(resources, url_prefix='/')
+    
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
     try:
         app.config.from_pyfile('./config/development.cfg')

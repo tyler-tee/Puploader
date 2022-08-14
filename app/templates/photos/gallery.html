@@ -24,7 +24,7 @@
         {% for photo in photos %}
         <div class="col-lg-4">
             <div class="card">
-                <img title="{{ photo }}" class="card-img-top" src="{{ url_for('static', filename='uploads/' + photo) }}">
+                <img title="{{ photo }}" class="card-img-top" src="{{ photo }}">
             </div>
         </div>
         {% endfor %}

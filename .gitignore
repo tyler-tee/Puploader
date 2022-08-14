@@ -9,6 +9,7 @@ app/static/uploads/bruno.jpg
 app/petfinder_api/petfinder_config.json
 app/config.json
 app/config/development.cfg
+app/config/production.cfg
 app/orgs.json
 app/charitynav_api/orgs_response.json
 app/config/config.json

@@ -4,7 +4,7 @@ View responsible for authentication-related functions within Puploader.
 import json
 import os
 import bcrypt
-from flask import (Blueprint, redirect, render_template,
+from flask import (Blueprint, current_app, redirect, render_template,
                    request, session, url_for)
 from flask_login import login_user, logout_user
 from oauthlib.oauth2 import WebApplicationClient
@@ -14,14 +14,9 @@ from user import User
 
 auth = Blueprint('auth', __name__, template_folder='templates')
 
-
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
-
-client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 
 def get_google_provider_cfg():
@@ -35,8 +30,8 @@ def db_connect():
     """
     Connect to the MongoDB backend to provide user information.
     """
-    if os.environ.get('MONGODB_URI'):
-        mongo_uri = os.environ.get('MONGODB_URI')
+    if current_app.config['MONGODB_URI']:
+        mongo_uri = current_app.config['MONGODB_URI']
     else:
         mongo_uri = '127.0.0.1'
 
@@ -45,7 +40,7 @@ def db_connect():
     return database['USERS']
 
 
-users = db_connect()
+# users = db_connect()
 
 
 @auth.route('/register', methods=['POST', 'GET'])
@@ -53,14 +48,17 @@ def register():
     """
     Register Puploader users either via its registration form.
     """
+    print(url_for('auth.authenticated'))
     if "username" in session:
-        return redirect(url_for('auth.authenticated'))
+        return redirect(url_for('auth.authenticated', _external=True))
 
     if request.method == 'POST':
         name = request.form.get('inputFirstName')
         username = request.form.get('inputUsername').lower()
         password = request.form.get('inputPassword')
         password_conf = request.form.get('confirmPassword')
+        
+        users = db_connect()
 
         if users.find_one({'email': username}):
             return render_template('/auth/register.html',
@@ -94,13 +92,15 @@ def login():
         username = request.form.get('inputUsername')
         password = request.form.get('inputPassword')
 
+        users = db_connect()
+
         user_record = users.find_one({'email': username.lower()})
 
         if user_record:
             if bcrypt.checkpw(password.encode('utf-8'),
                               user_record['password']):
                 session['username'] = user_record['email']
-                return redirect(url_for('auth.authenticated'))
+                return redirect(url_for('auth.authenticated', _external=True))
 
             message = 'Incorrect password - Please try again.'
             return render_template('/auth/login.html',
@@ -126,7 +126,8 @@ def google_auth():
     """
     google_provider_cfg = get_google_provider_cfg()
     auth_endpoint = google_provider_cfg['authorization_endpoint']
-
+    client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
+    
     request_uri = client.prepare_request_uri(auth_endpoint,
                                              redirect_uri=request.base_url + "/callback",
                                              scope=['openid', 'email', 'profile'],
@@ -145,6 +146,7 @@ def google_auth_callback():
 
     google_provider_cfg = get_google_provider_cfg()
     token_endpoint = google_provider_cfg['token_endpoint']
+    client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
 
     token_url, headers, body = client.prepare_token_request(
                                                             token_endpoint,
@@ -154,7 +156,7 @@ def google_auth_callback():
                                                             )
 
     token_response = requests.post(token_url, headers=headers, data=body,
-                                   auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),)
+                                   auth=(current_app.config['GOOGLE_CLIENT_ID'], current_app.config['GOOGLE_CLIENT_SECRET']),)
 
     client.parse_request_body_response(json.dumps(token_response.json()))
 
@@ -192,6 +194,7 @@ def authenticated():
     Automatically redirects to index.
     """
     if "username" in session:
+        users = db_connect()
         username = session['username']
         name = users.find_one({'email': username})['name']
 
