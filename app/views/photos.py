@@ -181,7 +181,7 @@ def render_gallery():
     Intended to be used to display uploaded user photos (of dogs).
     """
     if "username" in session:
-        if not current_app.config['S3_BUCKET']:
+        if current_app.config['S3_BUCKET']:
             bucket_name = "https://puploader.s3.us-east-2.amazonaws.com/"
             photos = get_s3_photos()
             photo_lst = [f'{bucket_name}' + photo for photo in photos]
