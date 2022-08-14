@@ -27,7 +27,7 @@ def puploader_landing():
     Puploader's landing page.
     Renders index.html/index_unauth.html based on session information.
     """
-    if app.config['S3_BUCKET']:
+    if not app.config['S3_BUCKET']:
         bucket_name = "https://puploader.s3.us-east-2.amazonaws.com/"
         photos = get_s3_photos()
         photos = [f'{bucket_name}' + photo for photo in photos]
