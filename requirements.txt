@@ -1,6 +1,6 @@
 bcrypt
 boto3
-dnspython
+dnspython>=2.6.1
 Flask
 Flask-Login
 gunicorn
@@ -10,3 +10,4 @@ pymongo
 requests>=2.32.2
 whitenoise
 werkzeug>=3.0.3 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1
