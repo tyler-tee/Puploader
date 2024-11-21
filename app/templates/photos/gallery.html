@@ -15,7 +15,7 @@
                 {% for folder in folders %}
                     <div style="display: inline-block">                        
                         <a href="{{ url_for('render_subfolder_gallery', subfolder=folder) }}" style="color: grey">
-                            <image src="{{ url_for('static', filename='assets/folder-icon.png') }}"></image>
+                            <image src="{{ url_for('static', filename='assets/folder-icon.png') }}" alt="folder-icon"></image>
                             <p class="img-desc">{{ folder }}</p>
                         </a>
                     </div>
@@ -24,7 +24,7 @@
         {% for photo in photos %}
         <div class="col-lg-4">
             <div class="card">
-                <img title="{{ photo }}" class="card-img-top" src="{{ url_for('static', filename='uploads/' + photo) }}">
+                <img title="{{ photo }}" class="card-img-top" src="{{ url_for('static', filename='uploads/' + photo) }}" alt="card-img">
             </div>
         </div>
         {% endfor %}
