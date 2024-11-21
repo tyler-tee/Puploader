@@ -1,4 +1,4 @@
-var form = document.getElementById("formNewFolder");
+let form = document.getElementById("formNewFolder");
 form.addEventListener("submit", onSubmitForm);
 
 function onSubmitForm(e) {
