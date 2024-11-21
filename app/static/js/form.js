@@ -7,3 +7,15 @@ function onSubmitForm(e) {
     $('#btnNewForm').hide();
     $('#message').show();
 }
+
+function handleKeyDown(event) {
+    console.log('Key down:', event.key);
+}
+
+function handleKeyPress(event) {
+    console.log('Key press:', event.key);
+}
+
+function handleKeyUp(event) {
+    console.log('Key up:', event.key);
+}
