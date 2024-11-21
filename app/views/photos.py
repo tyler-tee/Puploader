@@ -5,7 +5,7 @@ import json
 import os
 from typing import List
 import boto3
-from flask import (Blueprint, current_app, flash,
+from flask import (Blueprint, current_app, escape, flash,
                    redirect, render_template, request,
                    session, url_for)
 from werkzeug.utils import secure_filename
@@ -145,8 +145,8 @@ def create_new_folder():
     Primarily expected to be leveraged by a private instance.
     """
     if current_app.config['PRIVATE']:
-        new_folder = request.form['folderName']
-        new_folder = new_folder.replace('.', '').replace('/', '').replace('\\', '')
+        raw_new_folder = escape(request.form['folderName']).lower()
+        new_folder = raw_new_folder.replace('.', '').replace('/', '').replace('\\', '')
 
         try:
             os.mkdir(os.path.join(current_app.config['UPLOAD_FOLDER'], new_folder))
@@ -200,7 +200,8 @@ def render_subfolder_gallery(subfolder):
         return redirect(url_for('/'))
 
     if "username" in session:
-        subfolder_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], subfolder)
+        safe_subfolder = escape(subfolder)
+        subfolder_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], safe_subfolder)
         folders = [folder for folder in os.listdir(current_app.config['UPLOAD_FOLDER'])
                    if os.path.isdir(os.path.join(subfolder_dir, folder))]
         folders.sort()
