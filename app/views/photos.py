@@ -16,203 +16,143 @@ photos = Blueprint('photos', __name__, template_folder='templates')
 AUTH_LOGIN = 'auth.login'
 
 
-def get_s3_photos() -> List:
-    """
-    Retrieve all photos from Puploader's S3 bucket.
-    """
-    s3_client = boto3.client('s3')
-    objects = s3_client.list_objects_v2(Bucket='puploader')['Contents']
-    objects = [obj['Key'] for obj in objects]
+def list_folders(base_path: str) -> List[str]:
+    """List all subfolders in the given base path."""
+    return sorted([folder for folder in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, folder))])
 
-    return objects
+
+def get_s3_photos(bucket_name: str = 'puploader') -> List[str]:
+    """Retrieve all photo keys from an S3 bucket."""
+    s3_client = boto3.client('s3')
+    response = s3_client.list_objects_v2(Bucket=bucket_name)
+    return [obj['Key'] for obj in response.get('Contents', [])]
+
+
+def resolve_duplicate_filename(filename: str, existing_files: List[str]) -> str:
+    """Resolve duplicate filenames by appending '_dupe'."""
+    while filename in existing_files:
+        name, extension = os.path.splitext(filename)
+        filename = f"{name}_dupe{extension}"
+    return filename
+
+
+def cleanup_directory(directory: str, max_files: int):
+    """Remove oldest files if the directory exceeds the allowed limit."""
+    files = [(f, os.path.getmtime(os.path.join(directory, f))) for f in os.listdir(directory)]
+    files.sort(key=lambda x: x[1])  # Sort by modification time
+    while len(files) > max_files:
+        os.remove(os.path.join(directory, files.pop(0)[0]))
+
+
+def upload_to_s3(file, bucket_name: str):
+    """Upload a file to S3."""
+    bucket = boto3.resource('s3').Bucket(bucket_name)
+    bucket.Object(file.filename).put(Body=file)
 
 
 @photos.route('/upload')
 def puploader_upload():
-    """
-    Entry route for Puploader's photo upload functionality.
-    """
+    """Entry route for Puploader's photo upload functionality."""
     if "username" in session:
-        folders = [folder for folder in os.listdir(current_app.config['UPLOAD_FOLDER'])
-                   if os.path.isdir(os.path.join(current_app.config['UPLOAD_FOLDER'], folder))]
-        folders.sort()
+        folders = list_folders(current_app.config['UPLOAD_FOLDER'])
         return render_template('/photos/upload.html', folders=folders, auth=('username' in session))
-
     return redirect(url_for(AUTH_LOGIN))
 
 
-def dir_cleanup():
-    """
-    Primarily used for a privately-hosted version of Puploader.
-    Removes oldest photo from upload folder.
-    """
-    files = {i: os.path.getmtime(i) for i in os.listdir(current_app.config['UPLOAD_FOLDER'])}
-
-    os.remove(files[0][0])
-
-
-@photos.route('/uploaded', methods=['GET', 'POST'])
+@photos.route('/uploaded', methods=['POST'])
 def upload_file():
-    """
-    Business logic for Puploader's photo uploads.
-    Expected scenario would be a private instance uploading to a folder on the same server,
-    whereas a publicly-available instance would upload to an S3 bucket instead.
-    """
-    if "username" in session:
-        if request.method == 'POST':  # Check for appropriate method
-            # Proceed if there are files to upload - Else notify user.
-            files = request.files.getlist('files')
+    """Handle photo uploads for private or public instances."""
+    if "username" not in session:
+        return redirect(url_for(AUTH_LOGIN))
 
-            if not files[0].filename:
-                flash('No file to upload - Please try again.', 'error')
-                return redirect('/upload')
+    files = request.files.getlist('files')
+    if not files or not files[0].filename:
+        flash('No file to upload - Please try again.', 'error')
+        return redirect('/upload')
 
-            folder_name = request.form['folder_dropdown'].lower()
+    folder_name = request.form.get('folder_dropdown', 'default').lower()
+    upload_folder = (os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(folder_name))
+                     if folder_name != 'default' else current_app.config['UPLOAD_FOLDER'])
 
-            if request.form['folder_dropdown'].lower() != 'default':
-                upload_folder = os.path.join(current_app.config['UPLOAD_FOLDER'],
-                                             secure_filename(folder_name))
-            else:
-                upload_folder = current_app.config['UPLOAD_FOLDER']
+    existing_files = (os.listdir(upload_folder) if current_app.config['PRIVATE'] else get_s3_photos())
+    for file in files:
+        if not file.filename.split('.')[-1].lower() in {'gif', 'jpg', 'jpeg', 'png'}:
+            continue
 
-            if current_app.config['PRIVATE']:
-                for file in files:
-                    extension = file.filename.split('.')[-1].lower()
+        file.filename = resolve_duplicate_filename(file.filename, existing_files)
 
-                    if extension in ('gif', 'jpg', 'jpeg', 'png'):  # Check for allowed extensions
-                        # If filename is a duplicate, tag w/ _dupe
-                        while file.filename in os.listdir(upload_folder):
-                            file.filename = '.'.join(file.filename.split('.')[:-1])
-                            file.filename += '_dupe.' + extension
+        if current_app.config['PRIVATE']:
+            if len(os.listdir(upload_folder)) >= current_app.config['UPLOAD_FOLDER_MAX']:
+                cleanup_directory(upload_folder, current_app.config['UPLOAD_FOLDER_MAX'])
+            file.save(os.path.join(upload_folder, secure_filename(file.filename)))
+        else:
+            upload_to_s3(file, 'puploader')
 
-                        if len(os.listdir('.')) >= current_app.config['UPLOAD_FOLDER_MAX']:
-                            dir_cleanup()
-
-                        file.save(os.path.join(upload_folder, secure_filename(file.filename)))
-            else:
-                for file in files:
-                    extension = file.filename.split('.')[-1].lower()
-
-                    if extension in ('gif', 'jpg', 'jpeg', 'png'):  # Check for allowed extensions
-                        # If filename is a duplicate, tag w/ _dupe
-                        while file.filename in get_s3_photos():
-                            file.filename = '.'.join(file.filename.split('.')[:-1])
-                            file.filename += '_dupe.' + extension
-
-                        # Upload photo to s3 bucket
-                        bucket = boto3.resource('s3').Bucket('puploader')
-                        bucket.Object(file.filename).put(Body=file)
-
-            flash('File(s) uploaded successfully!', 'success')
-
-            return redirect('/upload')
-
-        return 'Something went wrong - Please try again.'
-
-    return redirect(url_for(AUTH_LOGIN))
+    flash('File(s) uploaded successfully!', 'success')
+    return redirect('/upload')
 
 
 @photos.route('/sign_s3/')
 def sign_s3():
-    """
-    Used to provide Puploader's S3 bucket with a signature for photo uploads.
-    """
-    if os.environ.get('S3_BUCKET'):
-        s3_bucket = os.environ.get('S3_BUCKET')
-    else:
-        s3_bucket = current_app.config['S3_BUCKET']
-
-    raw_file_name = request.args.get('file_name')
-    file_name = secure_filename(raw_file_name)
-    file_type = request.args.get('file_type')
+    """Generate a presigned URL for S3 photo uploads."""
+    s3_bucket = os.environ.get('S3_BUCKET', current_app.config['S3_BUCKET'])
+    file_name = secure_filename(request.args.get('file_name', ''))
+    file_type = request.args.get('file_type', '')
     s3_client = boto3.client('s3')
-    presigned_post = s3_client.generate_presigned_post(Bucket=s3_bucket, Key=file_name,
-                                                       Fields={"acl": "public-read",
-                                                               "Content-Type": file_type},
-                                                       Conditions=[
-                                                                    {"acl": "public-read"},
-                                                                    {"Content-Type": file_type}
-                                                                    ],
-                                                       ExpiresIn=3600
-                                                       )
-
-    return json.dumps({'data': presigned_post,
-                       'url': f'https://{s3_bucket}.s3.amazonaws.com/{file_name}'})
+    presigned_post = s3_client.generate_presigned_post(
+        Bucket=s3_bucket,
+        Key=file_name,
+        Fields={"acl": "public-read", "Content-Type": file_type},
+        Conditions=[{"acl": "public-read"}, {"Content-Type": file_type}],
+        ExpiresIn=3600
+    )
+    return json.dumps({'data': presigned_post, 'url': f'https://{s3_bucket}.s3.amazonaws.com/{file_name}'})
 
 
-@photos.route('/new_folder', methods=['POST', 'GET'])
+@photos.route('/new_folder', methods=['POST'])
 def create_new_folder():
-    """
-    Allows users to create a new upload folder, should they wish to do so.
-    Primarily expected to be leveraged by a private instance.
-    """
-    if current_app.config['PRIVATE']:
-        raw_new_folder = escape(request.form['folderName']).lower()
-        new_folder = raw_new_folder.replace('.', '').replace('/', '').replace('\\', '')
-
-        try:
-            os.mkdir(os.path.join(current_app.config['UPLOAD_FOLDER'], new_folder))
-
-            flash('New folder ' + new_folder + ' created!')
-
-            return redirect('upload')
-
-        except FileExistsError:
-
-            flash('Folder already exists - No folder created.')
-            return redirect('upload')
-    else:
+    """Allow private instances to create new folders for uploads."""
+    if not current_app.config['PRIVATE']:
         flash("Sorry, new folder creation is disabled while running publicly!")
         return redirect('upload')
+
+    new_folder = secure_filename(request.form.get('folderName', '')).lower()
+    new_folder_path = os.path.join(current_app.config['UPLOAD_FOLDER'], new_folder)
+
+    try:
+        os.mkdir(new_folder_path)
+        flash(f'New folder "{new_folder}" created!')
+    except FileExistsError:
+        flash('Folder already exists - No folder created.')
+    return redirect('upload')
 
 
 @photos.route('/gallery', methods=['GET'])
 def render_gallery():
-    """
-    Route responsible for rendering Puploader's gallery.
-    Intended to be used to display uploaded user photos (of dogs).
-    """
-    if "username" in session:
-        if current_app.config['S3_BUCKET']:
-            bucket_name = "https://puploader.s3.us-east-2.amazonaws.com/"
-            photos = get_s3_photos()
-            photo_lst = [f'{bucket_name}' + photo for photo in photos]
-            folders = []
-        else:
-            folders = [folder for folder in os.listdir(current_app.config['UPLOAD_FOLDER'])
-                       if os.path.isdir(os.path.join(current_app.config['UPLOAD_FOLDER'], folder))]
-            folders.sort()
-            photo_lst = [photo for photo in os.listdir(current_app.config['UPLOAD_FOLDER'])
-                         if '.' in photo]
+    """Render Puploader's photo gallery."""
+    if "username" not in session:
+        return redirect(url_for(AUTH_LOGIN))
 
-        return render_template('/photos/gallery.html',
-                               photos=photo_lst,
-                               folders=folders,
-                               auth=('username' in session))
+    if current_app.config['S3_BUCKET']:
+        bucket_url = f"https://{current_app.config['S3_BUCKET']}.s3.amazonaws.com/"
+        photos = [f"{bucket_url}{photo}" for photo in get_s3_photos()]
+        folders = []
+    else:
+        folders = list_folders(current_app.config['UPLOAD_FOLDER'])
+        photos = [photo for photo in os.listdir(current_app.config['UPLOAD_FOLDER']) if '.' in photo]
 
-    return redirect(url_for(AUTH_LOGIN))
+    return render_template('/photos/gallery.html', photos=photos, folders=folders, auth=True)
 
 
 @photos.route('/gallery/<subfolder>', methods=['GET'])
 def render_subfolder_gallery(subfolder):
-    """
-    Render photos within subfolders present in the primary upload folder.
-    """
-    if '.' in subfolder:
-        return redirect(url_for('/'))
+    """Render photos from a specific subfolder."""
+    if '.' in subfolder or "username" not in session:
+        return redirect(url_for(AUTH_LOGIN))
 
-    if "username" in session:
-        safe_subfolder = escape(subfolder)
-        subfolder_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], safe_subfolder)
-        folders = [folder for folder in os.listdir(current_app.config['UPLOAD_FOLDER'])
-                   if os.path.isdir(os.path.join(subfolder_dir, folder))]
-        folders.sort()
-        photo_lst = [subfolder + '/' + photo for photo in os.listdir(subfolder_dir)
-                     if '.' in photo]
+    safe_subfolder = secure_filename(subfolder)
+    subfolder_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], safe_subfolder)
+    folders = list_folders(subfolder_dir)
+    photos = [f"{safe_subfolder}/{photo}" for photo in os.listdir(subfolder_dir) if '.' in photo]
 
-        return render_template('/photos/gallery.html',
-                               photos=photo_lst,
-                               folders=folders,
-                               auth=('username' in session))
-
-    return redirect(url_for(AUTH_LOGIN))
+    return render_template('/photos/gallery.html', photos=photos, folders=folders, auth=True)
