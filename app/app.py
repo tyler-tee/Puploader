@@ -10,7 +10,7 @@ from views.resources import resources
 
 
 def create_app():
-    """_App factory - Returns base application configured based on ./cfg file.
+    """App factory - Returns base application configured based on ./cfg file.
 
     Returns:
         Base application, petfinder_api instance, and MongoDB connection.

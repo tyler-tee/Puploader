@@ -5,6 +5,7 @@ app/static/uploads/*
 *.ipynb
 *.png
 *.pyc
+*.pem
 app/static/uploads/bruno.jpg
 app/petfinder_api/petfinder_config.json
 app/config.json

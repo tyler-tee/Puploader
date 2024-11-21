@@ -19,10 +19,8 @@ class User(UserMixin):
         self.email = email
         self.profile_pic = profile_pic
 
-
     def get_id(self):
         return self.user_id
-
 
     @staticmethod
     def get(user_id):
@@ -45,7 +43,6 @@ class User(UserMixin):
                     profile_pic=user['profile_pic'])
 
         return user
-
 
     @staticmethod
     def create(user_id: str, name: str, email: str, profile_pic: str) -> bool:

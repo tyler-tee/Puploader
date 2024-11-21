@@ -10,14 +10,13 @@ class PetFinder:
 
         self.client = requests.session()
 
-
     def auth(self):
         data = {'grant_type': 'client_credentials',
                 'client_id': self.api_key,
                 'client_secret': self.api_sec}
 
         response = self.client.post(f'{self.base_url}/oauth2/token',
-                                 data=data)
+                                    data=data)
 
         if response.status_code == 200:
             token = response.json()['access_token']
@@ -28,7 +27,6 @@ class PetFinder:
         self.client.headers = {'Authorization': f'Bearer {token}'}
 
         return token
-
 
     def get_organizations(self, **kwargs):
         params = kwargs
@@ -41,7 +39,6 @@ class PetFinder:
 
         print('Error: ', response.status_code, response.headers, response.text)
         return None
-
 
     def get_animals(self, **kwargs):
 
