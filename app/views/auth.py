@@ -24,6 +24,7 @@ GOOGLE_DISCOVERY_URL = (
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 AUTH_AUTHENTICATED = 'auth.authenticated'
+AUTH_LOGIN = '/auth/login.html'
 
 
 def get_google_provider_cfg():
@@ -105,17 +106,17 @@ def login():
                 return redirect(url_for(AUTH_AUTHENTICATED))
 
             message = 'Incorrect password - Please try again.'
-            return render_template('/auth/login.html',
+            return render_template(AUTH_LOGIN,
                                    message=message,
                                    auth=('username' in session))
 
         else:
             message = 'Username not found - Please check and try again.'
-            return render_template('/auth/login.html',
+            return render_template(AUTH_LOGIN,
                                    message=message,
                                    auth=('username' in session))
 
-    return render_template('/auth/login.html',
+    return render_template(AUTH_LOGIN,
                            message=message,
                            auth=('username' in session))
 
