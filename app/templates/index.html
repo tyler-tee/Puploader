@@ -11,19 +11,39 @@
     </div>
     {% endfor %}
   </div>
-  <a class="carousel-control-prev" data-target="#carousel" type="button" data-slide="prev" onkeydown="handleKeyPress(event)" onkeypress="handleKeyPress(event)" onkeyup="handleKeyPress(event)">
+  <button class="carousel-control-prev" data-target="#carousel" type="button" data-slide="prev" 
+          onkeydown="handleKeyPress(event)" onkeypress="handleKeyPress(event)" onkeyup="handleKeyPress(event)">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-  </a>
-  <a class="carousel-control-next" data-target="#carousel" type="button" data-slide="next" onkeydown="handleKeyPress(event)" onkeypress="handleKeyPress(event)" onkeyup="handleKeyPress(event)">
+  </button>
+  <button class="carousel-control-next" data-target="#carousel" type="button" data-slide="next" 
+          onkeydown="handleKeyPress(event)" onkeypress="handleKeyPress(event)" onkeyup="handleKeyPress(event)">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-  </a>
+  </button>
 </div>
 <div class="center">
   <div class="col">
     <div class="row d-flex justify-content-center mt-4">
       <div>
-        <a class="btn btn-primary btn-block" href='/upload' role="button" style="width: 178px;" onkeydown="handleKeyPress(event)" onkeypress="handleKeyPress(event)" onkeyup="handleKeyPress(event)">Upload Photos</a>
-        <a class="btn btn-primary btn-block" href='/gallery' role="button" style="width: 178px;" onkeydown="handleKeyPress(event)" onkeypress="handleKeyPress(event)" onkeyup="handleKeyPress(event)">Gallery</a>
+        <form action="/upload" method="get" style="width: 178px;">
+          <button 
+              type="submit" 
+              class="btn btn-primary btn-block" 
+              onkeydown="handleKeyPress(event)" 
+              onkeypress="handleKeyPress(event)" 
+              onkeyup="handleKeyPress(event)">
+            Upload Photos
+          </button>
+        </form>
+        <form action="/gallery" method="get" style="width: 178px;">
+          <button 
+              type="submit" 
+              class="btn btn-primary btn-block" 
+              onkeydown="handleKeyPress(event)" 
+              onkeypress="handleKeyPress(event)" 
+              onkeyup="handleKeyPress(event)">
+            Gallery
+          </button>
+        </form>
       </div>
     </div>
   </div>
