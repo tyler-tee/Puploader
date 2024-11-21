@@ -168,13 +168,11 @@ def google_auth_callback():
     if userinfo_response.json().get('email_verified'):
         unique_id = userinfo_response.json()["sub"]
         users_email = userinfo_response.json()["email"]
-        # picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
     else:
         print('User not verified.')
         unique_id = userinfo_response.json()["sub"]
         users_email = userinfo_response.json()["email"]
-        # picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
 
     user = User(user_id=unique_id, name=users_name, email=users_email, profile_pic='')
