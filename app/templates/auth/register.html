@@ -41,17 +41,26 @@
                 <div class="line-separator"></div>
               </div>
               <div class="pt-3 mt-0 d-flex">
-                <a class="btn btn-outline-dark mt-0" href="/google_auth" role="button" style="text-transform:none; vertical-align: middle; width: 100%">
-                  <img style="margin: bottom 5px; margin-right:5px; width: 45px;" alt="Google Register" src="/static/assets/Google_G_Logo.png" />
-                  Register with Google
-                </a>
+                <button 
+                type="submit" 
+                class="btn btn-outline-dark mt-0" 
+                style="text-transform:none; vertical-align: middle; width: 100%" 
+                onkeydown="handleKeyDown(event)" 
+                onkeypress="handleKeyPress(event)" 
+                onkeyup="handleKeyUp(event)">
+                <img 
+                    style="margin-bottom: 5px; margin-right: 5px; width: 45px;" 
+                    alt="Google Register" 
+                    src="/static/assets/Google_G_Logo.png" />
+                Register with Google
+            </button>
               </div>
             </form>
           </div>
         </div>
       </div>
       <div class="w-50 mx-auto px-0 d-flex d-sm-block">
-        <img src="{{ url_for('static', filename='assets/pups2.jpg') }}" alt="Login image" class="w-100 vh-100" style="object-fit: cover; object-position: right;">
+        <img src="{{ url_for('static', filename='assets/pups2.jpg') }}" alt="Login Banner" class="w-100 vh-100" style="object-fit: cover; object-position: right;">
       </div>
     </div>
   </div>
