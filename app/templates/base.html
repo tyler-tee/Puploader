@@ -46,9 +46,18 @@
               </a>
             </li>
             <li class="nav-item dropdown" id="navbarDropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownToggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Resources
-              </a>
+              <button 
+              class="nav-link dropdown-toggle" 
+              id="navbarDropdownToggle" 
+              role="button" 
+              data-toggle="dropdown" 
+              aria-haspopup="true" 
+              aria-expanded="false"
+              onkeydown="handleKeyDown(event)" 
+              onkeypress="handleKeyPress(event)" 
+              onkeyup="handleKeyUp(event)">
+              Resources
+              </button>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownToggle">
                 <li><a class="dropdown-item" href="/resources/local_pups">Adoptable Dogs</a></li>
                 <li><a class="dropdown-item" href="/resources/local_orgs">Animal-Friendly Orgs</a></li>
