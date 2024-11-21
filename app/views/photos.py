@@ -120,7 +120,8 @@ def sign_s3():
     else:
         s3_bucket = current_app.config['S3_BUCKET']
 
-    file_name = request.args.get('file_name')
+    raw_file_name = request.args.get('file_name')
+    file_name = secure_filename(raw_file_name)
     file_type = request.args.get('file_type')
     s3_client = boto3.client('s3')
     presigned_post = s3_client.generate_presigned_post(Bucket=s3_bucket, Key=file_name,
