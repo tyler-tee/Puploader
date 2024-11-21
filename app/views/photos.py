@@ -13,6 +13,8 @@ from werkzeug.utils import secure_filename
 
 photos = Blueprint('photos', __name__, template_folder='templates')
 
+AUTH_LOGIN = 'auth.login'
+
 
 def get_s3_photos() -> List:
     """
@@ -36,7 +38,7 @@ def puploader_upload():
         folders.sort()
         return render_template('/photos/upload.html', folders=folders, auth=('username' in session))
 
-    return redirect(url_for('auth.login'))
+    return redirect(url_for(AUTH_LOGIN))
 
 
 def dir_cleanup():
@@ -107,7 +109,7 @@ def upload_file():
 
         return 'Something went wrong - Please try again.'
 
-    return redirect(url_for('auth.login'))
+    return redirect(url_for(AUTH_LOGIN))
 
 
 @photos.route('/sign_s3/')
@@ -188,7 +190,7 @@ def render_gallery():
                                folders=folders,
                                auth=('username' in session))
 
-    return redirect(url_for('auth.login'))
+    return redirect(url_for(AUTH_LOGIN))
 
 
 @photos.route('/gallery/<subfolder>', methods=['GET'])
@@ -213,4 +215,4 @@ def render_subfolder_gallery(subfolder):
                                folders=folders,
                                auth=('username' in session))
 
-    return redirect(url_for('auth.login'))
+    return redirect(url_for(AUTH_LOGIN))
