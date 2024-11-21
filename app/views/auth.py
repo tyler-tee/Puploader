@@ -23,6 +23,8 @@ GOOGLE_DISCOVERY_URL = (
 
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
+AUTH_AUTHENTICATED = 'auth.authenticated'
+
 
 def get_google_provider_cfg():
     """
@@ -54,7 +56,7 @@ def register():
     Register Puploader users either via its registration form.
     """
     if "username" in session:
-        return redirect(url_for('auth.authenticated'))
+        return redirect(url_for(AUTH_AUTHENTICATED))
 
     if request.method == 'POST':
         name = request.form.get('inputFirstName')
@@ -88,7 +90,7 @@ def login():
     message = None
 
     if "username" in session:
-        return redirect(url_for('auth.authenticated'))
+        return redirect(url_for(AUTH_AUTHENTICATED))
 
     if request.method == 'POST':
         username = request.form.get('inputUsername')
@@ -100,7 +102,7 @@ def login():
             if bcrypt.checkpw(password.encode('utf-8'),
                               user_record['password']):
                 session['username'] = user_record['email']
-                return redirect(url_for('auth.authenticated'))
+                return redirect(url_for(AUTH_AUTHENTICATED))
 
             message = 'Incorrect password - Please try again.'
             return render_template('/auth/login.html',
@@ -182,7 +184,7 @@ def google_auth_callback():
     login_user(user)
     session['username'] = users_email
 
-    return redirect(url_for('auth.authenticated'))
+    return redirect(url_for(AUTH_AUTHENTICATED))
 
 
 @auth.route('/authenticated')
