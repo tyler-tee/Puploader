@@ -65,9 +65,11 @@ def upload_file():
                 flash('No file to upload - Please try again.', 'error')
                 return redirect('/upload')
 
+            folder_name = request.form['folder_dropdown'].lower()
+
             if request.form['folder_dropdown'].lower() != 'default':
                 upload_folder = os.path.join(current_app.config['UPLOAD_FOLDER'],
-                                             request.form['folder_dropdown'])
+                                             secure_filename(folder_name))
             else:
                 upload_folder = current_app.config['UPLOAD_FOLDER']
 
@@ -168,11 +170,17 @@ def render_gallery():
     Intended to be used to display uploaded user photos (of dogs).
     """
     if "username" in session:
-        folders = [folder for folder in os.listdir(current_app.config['UPLOAD_FOLDER'])
-                   if os.path.isdir(os.path.join(current_app.config['UPLOAD_FOLDER'], folder))]
-        folders.sort()
-        photo_lst = [photo for photo in os.listdir(current_app.config['UPLOAD_FOLDER'])
-                     if '.' in photo]
+        if current_app.config['S3_BUCKET']:
+            bucket_name = "https://puploader.s3.us-east-2.amazonaws.com/"
+            photos = get_s3_photos()
+            photo_lst = [f'{bucket_name}' + photo for photo in photos]
+            folders = []
+        else:
+            folders = [folder for folder in os.listdir(current_app.config['UPLOAD_FOLDER'])
+                       if os.path.isdir(os.path.join(current_app.config['UPLOAD_FOLDER'], folder))]
+            folders.sort()
+            photo_lst = [photo for photo in os.listdir(current_app.config['UPLOAD_FOLDER'])
+                         if '.' in photo]
 
         return render_template('/photos/gallery.html',
                                photos=photo_lst,
