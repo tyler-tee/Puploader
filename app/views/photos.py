@@ -76,7 +76,7 @@ def upload_file():
 
     existing_files = (os.listdir(upload_folder) if current_app.config['PRIVATE'] else get_s3_photos())
     for file in files:
-        if not file.filename.split('.')[-1].lower() in {'gif', 'jpg', 'jpeg', 'png'}:
+        if file.filename.split('.')[-1].lower() not in {'gif', 'jpg', 'jpeg', 'png'}:
             continue
 
         file.filename = resolve_duplicate_filename(file.filename, existing_files)
