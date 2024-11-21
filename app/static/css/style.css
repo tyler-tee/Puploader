@@ -282,8 +282,10 @@
 .org-info ul li{transition: 0.3s ease;}
 .org-info ul li:hover{transform: translateX(50px) scale(1.3);}
 
-.org-image:hover img {transition: all 0.3s ease-out;}
-.org-image:hover img {transform: scale(1.2, 1.2);}
+.org-image:hover img {
+  transition: all 0.3s ease-out;
+  transform: scale(1.2, 1.2);
+}
 
 .fa {  
   padding: 7px;
