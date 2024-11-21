@@ -6,7 +6,7 @@ import os
 from flask import (Blueprint, redirect,
                    render_template, request, session,
                    url_for)
-from charitynav_api.charitynav_api import CharityNav_API
+from charitynav_api.charitynav_api import CharityNavAPI
 from petfinder_api.petfinder_api import PetFinder
 
 resources = Blueprint('resources', __name__, template_folder='templates')
@@ -72,7 +72,7 @@ def render_resources(resource):
             charitynav_id = os.environ.get('CHARITY_APP_ID')
             charitynav_key = os.environ.get('CHARITY_APP_KEY')
 
-        charitynav_api = CharityNav_API(charitynav_id, charitynav_key)
+        charitynav_api = CharityNavAPI(charitynav_id, charitynav_key)
 
         charities = charitynav_api.get_organizations(category_id=1, sort='RATING:DESC')
         charities = charities[:10] if charities else None

@@ -2,7 +2,7 @@ import requests
 from typing import List
 
 
-class CharityNav_API:
+class CharityNavAPI:
     """
     Wrapper for CharityNavigator's REST API.
     """
