@@ -2,6 +2,7 @@
 <div align="center">
   
 [![Pylint](https://github.com/tyler-tee/Puploader/actions/workflows/pylint.yml/badge.svg?branch=master&event=push)](https://github.com/tyler-tee/Puploader/actions/workflows/pylint.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tyler-tee_Puploader&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=tyler-tee_Puploader)
 
 </div>
 <table>
